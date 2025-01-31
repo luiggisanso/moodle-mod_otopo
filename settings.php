@@ -54,7 +54,7 @@ if ($hassiteconfig) {
             'mod_otopo/default_gradeonlyforteacher',
             new lang_string('defaultgradeonlyforteacher', 'mod_otopo'),
             new lang_string('defaultgradeonlyforteacher_desc', 'mod_otopo'),
-            0
+            1
         ));
         $settingspage->add(new admin_setting_configcheckbox(
             'mod_otopo/default_sessionscalendar',

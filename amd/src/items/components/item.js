@@ -71,40 +71,45 @@ define([
         methods: {
             deleteItem() {
                 if (!this.hasOtopo) {
-                    store.deleteItem(this.index);
                     ajax.deleteItem(this.item.id, this.cmid);
-                }
-            },
-            duplicateItem(e) {
-                e.preventDefault();
-                if (!this.hasOtopo) {
-                    const item = {...this.item};
-                    item.degrees = [];
-                    this.item.degrees.forEach((degree) => {
-                        item.degrees.push({...degree});
-                    });
-                    delete item.id;
-                    item.degrees.forEach((degree) => {
-                        delete degree.id;
-                    });
-                    item.ord = this.item.ord + 1;
-                    var itemsToPersist = store.addItemAfter(this.index, item);
-                    itemsToPersist.forEach((item) => {
+                    store.deleteItem(this.index).forEach((item) => {
                         if (item.id) {
                             var itemToPersist = {...item};
                             delete itemToPersist.degrees;
                             ajax.editItem(itemToPersist, this.cmid);
                         }
                     });
-                    const itemToCreate = {...item};
+                }
+            },
+            duplicateItem(e) {
+                e.preventDefault();
+                if (!this.hasOtopo) {
+                    const item = {...this.item};
+                    delete item.id;
+                    item.degrees = [];
+
+                    store.addItemAfter(this.index, item).forEach((nextItem) => {
+                        if (nextItem.id) {
+                            var itemToPersist = {...nextItem};
+                            delete itemToPersist.degrees;
+                            ajax.editItem(itemToPersist, this.cmid);
+                        }
+                    });
+
+                    var itemToCreate = {...item};
                     delete itemToCreate.degrees;
                     ajax.createItem(this.otopo, itemToCreate, this.cmid).then((itemId) => {
                         item.id = itemId;
-                        item.degrees.forEach((degree) => {
-                            ajax.createDegree(itemId, degree, this.cmid).then((degreeId) => {
-                                degree.id = degreeId;
+                        this.item.degrees.forEach((degree) => {
+                            var newDegree = {...degree};
+                            delete newDegree.id;
+
+                            ajax.createDegree(item.id, newDegree, this.cmid).then((degreeId) => {
+                                newDegree.id = degreeId;
                                 return true;
                             }).catch(Log.error);
+
+                            item.degrees.push(newDegree);
                         });
                         return true;
                     }).catch(Log.error);
@@ -160,26 +165,16 @@ define([
             onDrop(evt, before) {
                 evt.preventDefault();
                 if (!this.hasOtopo) {
-                    const itemIndex = parseInt(evt.dataTransfer.getData('itemIndex'));
-                    const testItemIndex = before ? itemIndex + 1 : itemIndex;
-                    const testIndex = before ? this.index : this.index + 1;
-                    if (itemIndex != this.index && testItemIndex != testIndex) {
-                        var deletedItem = store.deleteItem(itemIndex);
-                        deletedItem.ord = before ? this.item.ord : this.item.ord + 1;
-                        var itemsToPersist = store.addItemAfter(this.index, deletedItem);
-                        itemsToPersist.forEach((item) => {
-                            if (item.id) {
-                                var itemToPersist = {...item};
-                                delete itemToPersist.degrees;
-                                ajax.editItem(itemToPersist, this.cmid);
-                            }
-                        });
-                        if (deletedItem.id) {
-                            var deletedItemToPersist = {...deletedItem};
-                            delete deletedItemToPersist.degrees;
-                            ajax.editItem(deletedItemToPersist, this.cmid);
+                    const indexFrom = parseInt(evt.dataTransfer.getData('itemIndex'));
+                    const indexTo = before ? this.index : this.index + 1;
+
+                    store.moveItem(indexFrom, indexTo).forEach((item) => {
+                        if (item.id) {
+                            var itemToPersist = {...item};
+                            delete itemToPersist.degrees;
+                            ajax.editItem(itemToPersist, this.cmid);
                         }
-                    }
+                    });
                 }
             },
             onDropDegree(evt) {

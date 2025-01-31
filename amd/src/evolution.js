@@ -1,26 +1,6 @@
 // This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// ... [Licensing and documentation comments]
 
-/**
- * Evolution.
- *
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 define([
     'core/notification',
     'core/templates',
@@ -71,6 +51,31 @@ define([
                 const item = parseInt(document.getElementById('id_item').value);
 
                 loadAjaxEvolution(parseInt(otopo), visual, item).then((data) => {
+                    // Vérifiez et modifiez data.max si nécessaire
+                    // data.max = 5; // Décommentez si vous souhaitez définir manuellement
+
+                    // Limiter les données pour qu'elles ne dépassent pas data.max
+                    const limitData = (dataset) => {
+                        dataset.data = dataset.data.map(value => Math.min(value, data.max));
+                        return dataset;
+                    };
+
+                    if (data.currentchart && data.currentchart.datasets) {
+                        data.currentchart.datasets = data.currentchart.datasets.map(limitData);
+                    }
+
+                    if (data.charts && data.charts.length > 0) {
+                        data.charts.forEach(chart => {
+                            if (chart.datasets) {
+                                chart.datasets = chart.datasets.map(limitData);
+                            }
+                        });
+                    }
+
+                    if (data.chartitem && data.chartitem.datasets) {
+                        data.chartitem.datasets = data.chartitem.datasets.map(limitData);
+                    }
+
                     data.hascharts = data.charts.length > 0;
                     data.currentchart = data.currentchart.id ? data.currentchart : null;
                     data.chartitem = data.chartitem.id ? data.chartitem : null;
@@ -79,29 +84,56 @@ define([
                     Templates.renderForPromise('mod_otopo/evol', data).then(({html, js}) => {
                         Templates.replaceNodeContents('#evolution', html, js);
                         let options;
-                        if (visual == 'radar') {
+                        if (visual === 'radar') {
                             options = {
-                                scale: {
-                                    ticks: {
-                                        min: 0,
-                                        max: data.max,
-                                        stepSize: 1
-                                    }
-                                },
                                 scales: {
                                     r: {
-                                        beginAtZero: true
+                                        beginAtZero: true,
+                                        min: 0,
+                                        max: data.max, // Définir max directement sur l'axe
+                                        ticks: {
+                                            stepSize: 1,
+                                            callback: function(value) {
+                                                if (value === 0) {
+                                                    return "";
+                                                }
+                                                return degreeStr + " " + value;
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        displayColors: false,
+                                        callbacks: {
+                                            title: function(context) {
+                                                if (context.length > 0 && context[0].label) {
+                                                    return context[0].label;
+                                                }
+                                                return null;
+                                            },
+                                            label: function(context) {
+                                                if (context) {
+                                                    let label = context.formattedValue || '0';
+                                                    label += context.dataset.labels[context.dataIndex] ?
+                                                        (' - ' + context.dataset.labels[context.dataIndex]) : '';
+                                                    return label;
+                                                }
+                                                return null;
+                                            }
+                                        }
                                     }
                                 }
                             };
                         } else {
                             const yScale = {
+                                beginAtZero: true,
+                                min: 0,
+                                max: data.max, // Définir max directement sur l'axe
                                 ticks: {
-                                    beginAtZero: true,
-                                    min: 0,
-                                    max: data.max,
                                     stepSize: 1,
-                                    callbacks: function(value) {
+                                    callback: function(value) {
                                         if (value === 0) {
                                             return "";
                                         }
@@ -109,64 +141,68 @@ define([
                                     }
                                 }
                             };
-                            const legend = {display: false};
+                            const legend = { display: false };
                             if (data.moodlePre4) {
                                 options = {
                                     scales: {
-                                        yAxes: [yScale]
+                                        yAxes: [{
+                                            ...yScale
+                                        }]
+                                    },
+                                    legend: legend,
+                                    plugins: {
+                                        tooltip: {
+                                            displayColors: false,
+                                            callbacks: {
+                                                title: function(tooltipItems, chart) {
+                                                    return chart.fullLabels[tooltipItems[0].index];
+                                                },
+                                                label: function(tooltipItem, data) {
+                                                    let tooltipItemFromdata = data.datasets[tooltipItem.datasetIndex];
+                                                    let label = tooltipItemFromdata.data[tooltipItem.index] || '0';
+                                                    label += tooltipItemFromdata.labels[tooltipItem.index]
+                                                        ? (' - ' + tooltipItemFromdata.labels[tooltipItem.index])
+                                                        : '';
+                                                    return label;
+                                                }
+                                            }
+                                        }
                                     }
                                 };
-                                options.legend = legend;
                             } else {
                                 options = {
                                     scales: {
-                                        y: yScale
+                                        y: {
+                                            ...yScale
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: legend,
+                                        tooltip: {
+                                            displayColors: false,
+                                            callbacks: {
+                                                title: function(context) {
+                                                    if (context.length > 0 && context[0].label) {
+                                                        return context[0].label;
+                                                    }
+                                                    return null;
+                                                },
+                                                label: function(context) {
+                                                    if (context) {
+                                                        let label = context.formattedValue || '0';
+                                                        label += context.dataset.labels[context.dataIndex] ?
+                                                            (' - ' + context.dataset.labels[context.dataIndex]) : '';
+                                                        return label;
+                                                    }
+                                                    return null;
+                                                }
+                                            }
+                                        }
                                     }
                                 };
-                                options.plugins = {};
-                                options.plugins.legend = legend;
                             }
                         }
-                        if (data.moodlePre4) {
-                            options.tooltips = {
-                                displayColors: false,
-                                callbacks: {
-                                    title: function(tooltipItems, chart) {
-                                        return chart.fullLabels[tooltipItems[0].index];
-                                    },
-                                    label: function(tooltipItem, data) {
-                                        let label = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] || '0';
-                                        label += data.datasets[tooltipItem.datasetIndex].labels[tooltipItem.index] ?
-                                            (' - ' + data.datasets[tooltipItem.datasetIndex].labels[tooltipItem.index]) : '';
-                                        return label;
-                                    }
-                                }
-                            };
-                        } else {
-                            if (!options.plugins) {
-                                options.plugins = {};
-                            }
-                            options.plugins.tooltip = {
-                                displayColors: false,
-                                callbacks: {
-                                    title: function(context) {
-                                        if (context.length > 0 && context[0].label) {
-                                            return context[0].label;
-                                        }
-                                        return null;
-                                    },
-                                    label: function(context) {
-                                        if (context) {
-                                            let label = context.formattedValue || '0';
-                                            label += context.dataset.labels[context.dataIndex] ?
-                                                (' - ' + context.dataset.labels[context.dataIndex]) : '';
-                                            return label;
-                                        }
-                                        return null;
-                                    }
-                                }
-                            };
-                        }
+
                         const currentChartElement = document.getElementById('currentChart');
                         if (currentChartElement && data.currentchart) {
                             const config = {
@@ -197,47 +233,6 @@ define([
 
                         const chartItemElement = document.getElementById('chartItem');
                         if (chartItemElement && data.chartitem) {
-                            if (data.moodlePre4) {
-                                options.tooltips = {
-                                    displayColors: false,
-                                    callbacks: {
-                                        label: function(tooltipItem, data) {
-                                            var label = data.label || '';
-                                            if (label) {
-                                                label += ': ';
-                                            }
-                                            label += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] || '0';
-                                            label += data.fullLabels[tooltipItem.index] ?
-                                                (' - ' + data.fullLabels[tooltipItem.index]) : '';
-                                            return label;
-                                        }
-                                    }
-                                };
-                            } else {
-                                if (!options.plugins) {
-                                    options.plugins = {};
-                                }
-                                options.plugins.tooltip = {
-                                    displayColors: false,
-                                    callbacks: {
-                                        title: function(context) {
-                                            if (context.length > 0 && context[0].label) {
-                                                return context[0].label;
-                                            }
-                                            return null;
-                                        },
-                                        label: function(context) {
-                                            if (context) {
-                                                let label = context.formattedValue || '0';
-                                                label += ': ';
-                                                label += context.dataset.label ? context.dataset.label : '';
-                                                return label;
-                                            }
-                                            return null;
-                                        }
-                                    }
-                                };
-                            }
                             const config = {
                                 type: visual,
                                 data: data.chartitem,

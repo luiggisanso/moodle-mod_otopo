@@ -1113,14 +1113,23 @@ class mod_otopo_external extends external_api {
             $participant,
             $o->sessionvisual == 0 ? 'radar' : 'bar',
             null
-        );
-        $lastmodification = last_modification_on_session($o, $participant, $sessiono['id']);
-        if ($lastmodification) {
-            $sessiono['lastmodification'] = userdate(
-                last_modification_on_session($o, $participant, $sessiono['id']),
-                get_string('strftimedatetimeshort', 'core_langconfig')
-            );
+        );if ($sessiono === null || !isset($sessiono['id'])) {
+            debugging('Aucune session valide n\'a été trouvée pour l\'ID : ' . $session, DEBUG_DEVELOPER);
+            // Soit on lève une exception, soit on saute le traitement ci-dessous.
+            // throw new moodle_exception('sessionnotfound', 'error');
+        } else {
+            // Appel OK car on sait que $sessiono['id'] est un int.
+            $lastmodification = last_modification_on_session($o, $participant, $sessiono['id']);
+            if ($lastmodification) {
+                $sessiono['lastmodification'] = userdate(
+                    $lastmodification,
+                    get_string('strftimedatetimeshort', 'core_langconfig')
+                );
+            }
+            $sessiono['grade'] = $sessions[$sessiono['key'] - 1]->grade;
+            $sessiono['comment'] = $sessions[$sessiono['key'] - 1]->comment;
         }
+        
         $sessiono['grade'] = $sessions[$sessiono['key'] - 1]->grade;
         $sessiono['comment'] = $sessions[$sessiono['key'] - 1]->comment;
 
@@ -1269,7 +1278,7 @@ class mod_otopo_external extends external_api {
      */
     public static function submit_grading_form(int $o, int $userid, int $session, string $jsonformdata, array $itemscomments) {
         global $DB;
-
+    
         $params = self::validate_parameters(self::submit_grading_form_parameters(), [
             'otopo' => $o,
             'userid' => $userid,
@@ -1277,15 +1286,13 @@ class mod_otopo_external extends external_api {
             'jsonformdata' => $jsonformdata,
             'itemscomments' => $itemscomments,
         ]);
-
+    
         $otopoid = $params['otopo'];
         $o = $DB->get_record('otopo', [ 'id' => $otopoid ], '*', MUST_EXIST);
-
+    
         $context = self::validate_otopo($otopoid, false);
-
         require_capability('mod/otopo:grade', $context);
-
-        // On teste si la session est cloturée.
+    
         if (!session_is_valid_or_closed($otopoid, (object) [ 'id' => $userid ], $session)) {
             return [[
                 'item' => 'Invalid session.',
@@ -1294,25 +1301,33 @@ class mod_otopo_external extends external_api {
                 'message' => 'Could not save grade',
             ]];
         }
-
-        // Data is injected into the form by the last param for the constructor.
+    
         $warnings = [];
         $data = [];
-        parse_str(json_decode($params['jsonformdata']), $data); // Why URL-encoded AND JSON encoded ;(.
-
-        $mform = new grade_form(null, [ 'otopo' => $o, 'grader' => (object) $data ], 'post', '', null, true, $data);
+        parse_str(json_decode($params['jsonformdata']), $data);
+    
+        $mform = new grade_form(
+            null,
+            [ 'otopo' => $o, 'grader' => (object) $data ],
+            'post',
+            '',
+            null,
+            true,
+            $data
+        );
+    
         if ($validateddata = $mform->get_data()) {
-            if (
-                $graderid = $DB->get_field('otopo_grader', 'id', [
-                    'userid' => $userid,
-                    'session' => $session,
-                    'otopo' => $o->id,
-                ])
-            ) {
+            $grade = isset($validateddata->grade) ? $validateddata->grade : 0;
+    
+            if ($graderid = $DB->get_field('otopo_grader', 'id', [
+                'userid' => $userid,
+                'session' => $session,
+                'otopo' => $o->id,
+            ])) {
                 $DB->update_record('otopo_grader', [
                     'id' => $graderid,
                     'comment' => $validateddata->comment['text'],
-                    'grade' => $validateddata->grade,
+                    'grade' => $grade,
                 ]);
             } else {
                 $DB->insert_record('otopo_grader', [
@@ -1320,10 +1335,11 @@ class mod_otopo_external extends external_api {
                     'session' => $session,
                     'otopo' => $o->id,
                     'comment' => $validateddata->comment['text'],
-                    'grade' => $validateddata->grade,
+                    'grade' => $grade,
                 ]);
             }
             otopo_update_grades($o, $userid);
+    
         } else {
             $warnings[] = [
                 'item' => 'Form validation failed.',
@@ -1332,7 +1348,7 @@ class mod_otopo_external extends external_api {
                 'message' => 'Could not save grade',
             ];
         }
-
+    
         foreach ($itemscomments as $itemcomment) {
             $otopo = $DB->get_record('otopo_user_otopo', [
                 'userid' => $userid,
@@ -1342,9 +1358,10 @@ class mod_otopo_external extends external_api {
             $otopo->teacher_comment = $itemcomment['value'];
             $DB->update_record('otopo_user_otopo', $otopo);
         }
-
+    
         return $warnings;
     }
+    
 
     /**
      * Describes the return for submit_grading_form.
@@ -1354,4 +1371,51 @@ class mod_otopo_external extends external_api {
     public static function submit_grading_form_returns() {
         return new external_warnings();
     }
+
+    public static function get_sessions_parameters() {
+        return new external_function_parameters([
+            'otopo' => new external_value(PARAM_INT, 'ID of the otopo activity'),
+        ]);
+    }
+    
+    public static function get_sessions_returns() {
+        return new external_multiple_structure(
+            new external_single_structure([
+                'id'   => new external_value(PARAM_INT, 'Session ID'),
+                'name' => new external_value(PARAM_TEXT, 'Session name', VALUE_OPTIONAL),
+            ])
+        );
+    }
+    
+    /**
+     * Retourne la liste des sessions pour un OTOPO, triées par ID (ou par date).
+     *
+     * @param int $otopo L'ID de l'activité OTOPO
+     * @return array La liste des sessions
+     */
+    public static function get_sessions(int $otopo) {
+        global $DB;
+        // Validation des paramètres
+        $params = self::validate_parameters(
+            self::get_sessions_parameters(),
+            [ 'otopo' => $otopo ]
+        );
+        // Vérification des droits : l'utilisateur doit pouvoir voir l'activité
+        self::validate_otopo($otopo, false);
+    
+        // Récupération des sessions : tri par 'id ASC' (ou 'allowsubmissionfromdate ASC' si c'est souhaité)
+        $records = $DB->get_records('otopo_session', ['otopo' => $otopo], 'id ASC');
+    
+        // Conversion pour retourner un tableau "id => ..., name => ..."
+        $result = [];
+        foreach ($records as $r) {
+            $result[] = [
+                'id' => $r->id,
+                'name' => $r->name ?? ''
+            ];
+        }
+    
+        return $result;
+    }
+    
 }

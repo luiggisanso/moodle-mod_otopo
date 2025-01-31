@@ -43,6 +43,18 @@ define(['core/ajax'], function(Ajax) {
                 },
             }]);
             await promises[0];
+        },
+        getSessions: async function(otopo) {
+            var promises = Ajax.call([{
+                methodname: 'mod_otopo_get_sessions',
+                args: {
+                    otopo: otopo
+                }
+            }]);
+            var sessions = await promises[0];
+            // sessions est un tableau d'objets : [ {id: ..., name: ...}, ... ], triés par id ASC
+            return sessions;
         }
+        
     };
 });

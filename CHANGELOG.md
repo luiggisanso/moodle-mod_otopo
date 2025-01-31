@@ -14,10 +14,39 @@ Additionally, make sure to acknowledge all contributors by adding their names to
 
 ## Table of Contents
 
+- [1.0.14](#1.0.14)
+- [1.0.13](#1.0.13)
 - [1.0.12](#1.0.12)
 - [1.0.11](#1.0.11)
 - [1.0.10](#1.0.10)
 - [1.0.9](#1.0.9)
+
+## 1.0.14
+
+### Added
+
+- External function to retrieve session details.
+
+### Fixed
+
+- Fixed a bug that prevented teachers from commenting on an assignment when the grade type was "NONE".
+- Fixed comments (from previous session) displayed to match the correct item order.
+- When the justification is empty, fetch the previous session justification.
+
+### Changed
+
+- Checkbox automatically checked and hidden if the grade type is set to "NONE".
+- Corrected the placement of data max within the axis configuration.
+- Maximum value is now based on the degrees defined in the grid.
+- Session dates now have a default value.
+
+## 1.0.13
+
+### Fixed
+
+- Errors/Warnings caused by a missing grade or comment in the session object.
+- Redirection problem when exporting a template.
+- When duplicating a grid item, the item order was incorrect.
 
 ## 1.0.12
 

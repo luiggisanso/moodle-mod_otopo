@@ -1,26 +1,3 @@
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * Otopo vue item.
- *
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 define([
     'mod_otopo/otopo/components/modal',
     'mod_otopo/otopo/components/degrees',
@@ -38,17 +15,65 @@ define([
             'Degrees': Degrees
         },
         props: {
-            item: {
-                type: Object
-            },
-            index: {
-                type: Number
+            item: { type: Object },
+            index: { type: Number }
+        },
+        data: function() {
+            return {
+                processChange: utils.debounce(() => this.setUserOtopo()),
+                strings: this.$root.$data.strings,
+                showModal: false,
+
+                // Current value (ongoing session).
+                degree: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
+                    this.$root.$data.otopos[this.item.id].degree : null,
+
+                justification: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
+                    this.$root.$data.otopos[this.item.id].justification : "",
+
+                comment: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
+                    this.$root.$data.otopos[this.item.id].comment : "",
+
+                // --- NEW PROPERTY ---.
+                // Used to store the justification from the previous session.
+                // We will display it in a "placeholder".
+                placeholderJustification: ""
+            };
+        },
+
+        // Vue lifecycle hook: called after insertion into the DOM.
+        mounted() {
+            console.log("Mounted for item ID =", this.item.id, "justification=", this.justification);
+            if (!this.justification) {
+                console.log("Justification is empty => let's fetch session-1");
+                const currentSession = this.$root.$data.session;
+                // Simple assumption: the previous session = currentSession - 1.
+                const prevSession = currentSession - 1;
+                if (prevSession > 0) {
+                    ajax.getUserOtopo(this.$root.$data.otopo, prevSession)
+                        .then(prevData => {
+                            console.log("prevData for session", prevSession, "=", prevData);
+                            // prevData is an array of objects.
+                            let found = prevData.find(obj => obj.item === this.item.id);
+                            if (found && found.justification) {
+                                console.log("Found matching justification: ", found.justification);
+                                // We store this justification in 'placeholderJustification'.
+                                this.placeholderJustification = found.justification;
+                            } else {
+                                console.log("No matching item found in prevData for item id: " + this.item.id);
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Erreur récupération session précédente :", err);
+                        });
+                }
             }
         },
+        
         methods: {
             setUserOtopo() {
                 if (this.$root.$data.otopo === null) {
-                    // Must be preview. Ignore sending data.
+                    // Preview mode => no saving.
                     return;
                 }
                 ajax.setUserOtopo(
@@ -64,19 +89,7 @@ define([
                 this.setUserOtopo();
             }
         },
-        data: function() {
-            return {
-                processChange: utils.debounce(() => this.setUserOtopo()),
-                strings: this.$root.$data.strings,
-                showModal: false,
-                degree: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
-                    this.$root.$data.otopos[this.item.id].degree : null,
-                justification: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
-                    this.$root.$data.otopos[this.item.id].justification : "",
-                comment: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
-                    this.$root.$data.otopos[this.item.id].comment : "",
-            };
-        },
+
         computed: {
             disabledDegree: function() {
                 if (!this.$root.$data.session) {
@@ -91,22 +104,19 @@ define([
                 return !this.$root.$data.active || !this.degree;
             },
             justificationHtml: function() {
-                var expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi; // eslint-disable-line max-len
-                var regex = new RegExp(expression);
-
-                return this.justification.replace(regex, '$1'.link('$1'));
+                // Link conversion.
+                var expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][^\s]*|www\.[^\s]+)/gi;
+                return this.justification.replace(expression, '$1'.link('$1'));
             },
             commentHtml: function() {
                 if (!this.comment) {
                     return this.strings.noteachercomment;
                 }
-
-                var expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi; // eslint-disable-line max-len
-                var regex = new RegExp(expression);
-
-                return this.comment.replace(regex, '$1'.link('$1'));
+                var expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][^\s]*|www\.[^\s]+)/gi;
+                return this.comment.replace(expression, '$1'.link('$1'));
             }
         },
+
         template: `
             <div class="row mb-3">
                 <div class="col-md-12 text-center">
@@ -117,7 +127,8 @@ define([
                         :degree="degree"
                         :itemName="item.name"
                         :color="item.color"
-                        :degrees="item.degrees" @changed="degreeChanged"
+                        :degrees="item.degrees"
+                        @changed="degreeChanged"
                         :disabled="disabledDegree"
                     />
                 </div>
@@ -128,11 +139,12 @@ define([
                                 v-model="justification"
                                 :disabled="disabledJustification"
                                 class="form-control border-0"
-                                :placeholder="strings.yourjustification"
+                                :placeholder="placeholderJustification || strings.yourjustification"
                                 @input="processChange()"
                                 rows="5"
                             ></textarea>
                         </div>
+                        <small class="text-muted">Veuillez modifier ou reprendre le texte ci-dessus si nécessaire.</small>
                     </div>
                     <div class="comment border rounded pt-1 pl-3 pr-3 mb-2 shadow-sm only-print">
                         <div class="input-group mb-3">
@@ -140,8 +152,9 @@ define([
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button id="show-help-modal" class="bg-light rounded pl-2 pr-3 pt-1 pb-1 border shadow-sm"
-                            @click="showModal = true"
+                        <button id="show-help-modal"
+                                class="bg-light rounded pl-2 pr-3 pt-1 pb-1 border shadow-sm"
+                                @click="showModal = true"
                         >
                             <i class="icon fa fa-question" aria-hidden="true"></i>
                             {{ strings.help }}

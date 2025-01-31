@@ -128,6 +128,7 @@ if ($action === 'create') {
 } else if ($action === 'export' && $template) {
     $items = get_items_sorted_from_otopo(-$template->id);
     csv_from_items($items, 'grids_templates_' . $template->id . '.csv');
+    return;
 }
 
 if (!$mform && $action !== 'show') {

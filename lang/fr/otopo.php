@@ -84,7 +84,7 @@ $string['grade'] = 'Note';
 
 $string['sessionoptions'] = 'Options de sessions';
 $string['session'] = 'Session';
-$string['session_help'] = 'Si **Session libre** : les étudiants devront s\'auto-positionner sur les sessions que vous aurez définies. Si **Session imposée** : les étudiants pourront s\'auto-positionner autant de fois qu\'ils le souhaitent, dans la limite de sessions définie.';
+$string['session_help'] = 'Si **Session imposée** : les étudiants devront s\'auto-positionner sur les sessions que vous aurez définies. Si **Session imposée** : les étudiants pourront s\'auto-positionner autant de fois qu\'ils le souhaitent, dans la limite de sessions définie.';
 $string['sessionopen'] = 'Session libre';
 $string['sessionlimited'] = 'Session imposée';
 $string['sessions'] = 'Nombre de sessions';

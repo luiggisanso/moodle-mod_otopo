@@ -84,7 +84,7 @@ $string['grade'] = 'Grade';
 
 $string['sessionoptions'] = 'Session options';
 $string['session'] = 'Session';
-$string['session_help'] = 'If **Open session**: students must self-position to the sessions you define. If **Imposed session**: students can self-position as many times as they like, within the session limit defined.';
+$string['session_help'] = 'If **Imposed session**: students must self-position to the sessions you define. If **Imposed session**: students can self-position as many times as they like, within the session limit defined.';
 $string['sessionopen'] = 'Open session';
 $string['sessionlimited'] = 'Imposed session';
 $string['sessions'] = 'Number of sessions';

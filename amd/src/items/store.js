@@ -29,31 +29,66 @@ define([], function() {
             draggingDegree: false,
         },
         addItem: function(item) {
+            item.ord = this.state.items.length;
             this.state.items.push(item);
         },
         addItemAfter: function(index, item) {
-            var itemsToPersist = [];
+            if (index < 0) {
+                index = 0;
+            }
+            item.ord = ++index;
+
+            if (index >= this.state.items.length) {
+                this.state.items.push(item);
+                return [];
+            }
             this.state.items.splice(index, 0, item);
-            if (this.state.items.length > index + 1 && this.state.items[index + 1].ord <= item.ord) {
-                var j = 1;
-                for (var i = index + 1; i < this.state.items.length; i++) {
-                    this.state.items[i].ord = item.ord + j;
-                    itemsToPersist.push(this.state.items[i]);
-                    ++j;
-                }
+
+            var itemsToPersist = [];
+            for (var i = index + 1; i < this.state.items.length; i++) {
+                this.state.items[i].ord = i;
+                itemsToPersist.push(this.state.items[i]);
             }
             return itemsToPersist;
         },
-        deleteItem: function(index) {
-            var deletedItem = null;
-            for (var i = 0; i < this.state.items.length; i++) {
-                if (i === index) {
-                    deletedItem = this.state.items[i];
-                    this.state.items.splice(i, 1);
-                    break;
-                }
+        moveItem: function(indexFrom, indexTo) {
+            if (indexFrom < 0 || indexFrom >= this.state.items.length) {
+                return [];
             }
-            return deletedItem;
+
+            if (indexTo < 0) {
+                indexTo = 0;
+            } else if (indexTo >= this.state.items.length) {
+                indexTo = this.state.items.length - 1;
+            }
+
+            if (indexFrom === indexTo) {
+                return [];
+            }
+
+            const itemA = this.state.items[indexFrom];
+            const itemB = this.state.items[indexTo];
+
+            itemA.ord = indexTo;
+            itemB.ord = indexFrom;
+
+            this.state.items.splice(indexFrom, 1, itemB);
+            this.state.items.splice(indexTo, 1, itemA);
+
+            return [ itemA, itemB ];
+        },
+        deleteItem: function(index) {
+            if (index < 0 || index >= this.state.items.length) {
+                return [];
+            }
+            this.state.items.splice(index, 1);
+
+            var itemsToPersist = [];
+            for (var i = index; i < this.state.items.length; i++) {
+                this.state.items[i].ord = i;
+                itemsToPersist.push(this.state.items[i]);
+            }
+            return itemsToPersist;
         },
         addDegreeToItem: function(item, degree) {
             item.degrees.push(degree);

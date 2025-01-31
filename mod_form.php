@@ -61,11 +61,27 @@ class mod_otopo_mod_form extends moodleform_mod {
         // -------------------------------------------------------------------------------
 
         // -------------------------------------------------------------------------------
+
         $this->standard_grading_coursemodule_elements();
 
-        $mform->addElement('advcheckbox', 'gradeonlyforteacher', '', get_string('gradeonlyforteacher', 'otopo'), null, [0, 1]);
-        $mform->setDefault('gradeonlyforteacher', get_config('mod_otopo', 'default_gradeonlyforteacher'));
-        // -------------------------------------------------------------------------------
+        $mform->addElement('advcheckbox', 'gradeonlyforteacher', '', get_string('gradeonlyforteacher', 'otopo'), null, [0,1]);
+
+        // If $this->current->grade == 0, then the grade type is 'none'.
+        if (isset($this->current->grade) && $this->current->grade == 0) {
+            // If the grade type is 'none', force the checkbox to be checked.
+            $mform->setConstant('gradeonlyforteacher', 1);
+        } else {
+            // Otherwise, force it to be unchecked.
+            $mform->setConstant('gradeonlyforteacher', 0);
+        }
+        // Hide the checkbox if the grade type is "none".
+        $mform->hideIf('gradeonlyforteacher', 'grade[modgrade_type]', 'eq', 'none');
+
+
+        
+        
+
+                // -------------------------------------------------------------------------------
 
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'session_options', get_string('sessionoptions', 'otopo'));

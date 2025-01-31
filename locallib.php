@@ -110,6 +110,7 @@ function get_items_sorted_from_otopo($otopoid) {
         WHERE item.otopo = :otopo ORDER BY item.ord, degree.ord',
         ['otopo' => $otopoid]
     );
+
     foreach ($rs as $record) {
         if (!array_key_exists($record->ord, $items)) {
             $items[$record->ord] = (object) [
@@ -353,17 +354,18 @@ function get_graders(object $otopo) {
  * Convert grade to gradebook.
  *
  * @param int $user User ID.
- * @param int $grade Session grade.
+ * @param int|null $grade Session grade.
  * @param string|null $comment Session comment.
  * @return array
  */
-function convert_grade_to_gradebook(int $user, int $grade, ?string $comment) {
+function convert_grade_to_gradebook(int $user, ?int $grade, ?string $comment) {
     return [
         'userid' => $user,
-        'rawgrade' => $grade,
-        'feedback' => strip_tags($comment),
+        'rawgrade' => $grade ?? 0,
+        'feedback' => $comment ? strip_tags($comment) : '',
     ];
 }
+
 
 /**
  * Get course participants.
@@ -852,16 +854,15 @@ function prepare_data(object $o, array &$items, array &$otopos, object $user) {
         $session->displayname = $o->session && $session->name
             ? $session->name
             : get_string('fillautoeval', 'otopo', $session->index);
+        $session->grade = null;
+        $session->comment = "";
 
         $grader = $DB->get_record('otopo_grader', ['userid' => $user->id, 'session' => $session->id, 'otopo' => $o->id]);
         if ($grader) {
             $session->grade = $grader->grade;
             $session->comment = $grader->comment;
-        } else {
-            if ($o->grade > 0) {
-                $session->grade = calculate_grade($otopos, $items, $session, $o->grade);
-                $session->comment = "";
-            }
+        } else if ($o->grade > 0) {
+            $session->grade = calculate_grade($otopos, $items, $session, $o->grade);
         }
         if ($i == count($sessions)) {
             $session->last = true;

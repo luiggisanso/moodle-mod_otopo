@@ -20,12 +20,12 @@
     The template HTML for the grids view.
 }}
 <div class="d-flex justify-content-around">
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseGrid" role="button" aria-expanded="false" aria-controls="collapseGrid">{{#str}} gridcreateitem, otopo {{/str}}</a>
+    <button class="btn btn-primary" data-toggle="collapse" data-target="#collapseGrid" role="button" aria-expanded="true" aria-controls="collapseGrid">{{#str}} gridcreateitem, otopo {{/str}}</button>
     <a class="btn btn-primary {{#hasotopo}}disabled{{/hasotopo}}" {{#hasotopo}}href="#"{{/hasotopo}}{{^hasotopo}}href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=import&object=templates&sesskey={{sesskey}}"{{/hasotopo}}>{{#str}} gridcreatefromtemplate, otopo {{/str}}</a>
     <a class="btn btn-primary {{#hasotopo}}disabled{{/hasotopo}}" {{#hasotopo}}href="#"{{/hasotopo}}{{^hasotopo}}href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=import&object=grids&sesskey={{sesskey}}"{{/hasotopo}}>{{#str}} gridimportcsv, otopo {{/str}}</a>
 </div>
 
-<div class="collapse mt-3" id="collapseGrid">
+<div class="collapse show mt-3" id="collapseGrid">
     <div class="card card-body">
         <div id="otopo-grid">
         </div>
@@ -36,3 +36,6 @@
         </div>
     </div>
 </div>
+
+
+

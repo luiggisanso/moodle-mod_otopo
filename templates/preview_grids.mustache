@@ -21,6 +21,6 @@
 }}
 {{> mod_otopo/grids_table }}
 <div class="d-flex flex-row justify-content-end">
-    {{#canmanagetemplates}}<a class="btn btn-primary ml-1 mr-1" href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=edit&object=templates">{{#str}} saveastemplate, otopo {{/str}}</a>{{/canmanagetemplates}}
-    {{#canexportresults}}<a class="btn btn-primary ml-1 mr-1" href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=export&object=grids">{{#str}} exportascsv, otopo {{/str}}</a>{{/canexportresults}}
+    {{#canmanagetemplates}}<a class="btn btn-primary ml-1 mr-1" href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=edit&object=templates&sesskey={{sesskey}}">{{#str}} saveastemplate, otopo {{/str}}</a>{{/canmanagetemplates}}
+    {{#canexportresults}}<a class="btn btn-primary ml-1 mr-1" href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=export&object=grids&sesskey={{sesskey}}">{{#str}} exportascsv, otopo {{/str}}</a>{{/canexportresults}}
 </div>

@@ -56,6 +56,7 @@ $services = [
             'mod_otopo_get_user_otopo',
             'mod_otopo_set_user_otopo',
             'mod_otopo_get_my_evolution',
+            'mod_otopo_get_sessions',
         ],
         'requiredcapability' => 'mod/otopo:fill',
         'enabled' => 1,
@@ -204,4 +205,14 @@ $functions = [
         'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
         'capabilities' => 'mod/otopo:grade',
     ],
+    'mod_otopo_get_sessions' => [
+        'classname'   => 'mod_otopo_external',
+        'methodname'  => 'get_sessions',
+        'classpath'   => 'mod/otopo/externallib.php',
+        'description' => 'Get all sessions of an Otopo activity, sorted by ID or date.',
+        'type'        => 'read',
+        'ajax'        => true,
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE], 
+],
+
 ];

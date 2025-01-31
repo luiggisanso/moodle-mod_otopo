@@ -346,6 +346,7 @@ if ($canadmin || $cangrade || $canexportresults) {
                     'cm' => $cm,
                     'canmanagetemplates' => $canmanagetemplates,
                     'hasotopo' => has_otopo($moduleinstance->id),
+                    'sesskey' => $sesskey,
                 ]);
             } else if ($object == 'templates') {
                 require_capability('mod/otopo:managetemplates', $modulecontext);
@@ -394,6 +395,7 @@ if ($canadmin || $cangrade || $canexportresults) {
                     'items' => array_values($items),
                     'nbrdegreesmax' => $nbrdegreesmax,
                     'canmanagetemplates' => $canmanagetemplates,
+                    'sesskey' => $sesskey,
                 ]);
             } else if ($object == 'sessions') {
                 include('vue.php');

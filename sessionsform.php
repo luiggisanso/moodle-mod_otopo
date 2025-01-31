@@ -42,7 +42,8 @@ class sessions_form extends moodleform {
      */
     public function definition() {
         $mform = $this->_form;
-
+    
+        // Add existing hidden elements
         $mform->addElement('hidden', 'o', $this->_customdata['o']);
         $mform->setType('o', PARAM_INT);
         $mform->addElement('hidden', 'action', 'edit');
@@ -51,15 +52,23 @@ class sessions_form extends moodleform {
         $mform->setType('object', PARAM_TEXT);
         $mform->addElement('hidden', 'sesskey', $this->_customdata['sesskey']);
         $mform->setType('sesskey', PARAM_TEXT);
-
+    
+        // Default configuration for date selectors
         $defaultsdate = [
             'optional' => false,
-            'startyear' => 2020,
-            'stopyear'  => 2040,
-            'timezone'  => 99,
-            'step'      => 5,
+            'startyear' => date('Y'), // Current start year
+            'stopyear'  => date('Y') + 10, // Current end year + 10 years
+            'timezone'  => 99, // Use site's timezone
+            'step'      => 5, // 5-minute steps
         ];
-
+    
+        // Set the number of sessions to repeat
+        $repeatno = $this->_customdata['count_sessions'];
+        if ($repeatno == 0) {
+            $repeatno = $this->_customdata['sessions'];
+        }
+    
+        // Define the array of repeated elements
         $repeatarray = [];
         $repeatarray[] = $mform->createElement('text', 'name', get_string('sessionname', 'otopo'), ['size' => '64']);
         $colorel = $mform->createElement(
@@ -88,32 +97,57 @@ class sessions_form extends moodleform {
             get_string("sessiondelete", 'otopo'),
             ['class' => 'deletesession']
         );
-
-        $repeatno = $this->_customdata['count_sessions'];
-        if ($repeatno == 0) {
-            $repeatno = $this->_customdata['sessions'];
-        }
-
+    
+        // Define the options for repeated elements
         $repeateloptions = [];
-
+    
+        // Define the types of the elements
         $mform->setType('name', PARAM_TEXT);
         $mform->setType('color', PARAM_TEXT);
         $mform->setType('id', PARAM_INT);
-
+    
+        // Define the validation rules
         $repeateloptions['allowsubmissionfromdate']['rule'] = 'required';
         $repeateloptions['allowsubmissiontodate']['rule'] = 'required';
-
+    
+        // Create the repeated elements
         $this->repeat_elements(
             $repeatarray,
             $repeatno,
             $repeateloptions,
-            'option_repeats',
-            'option_add_fields',
-            1,
-            get_string('sessionadd', 'otopo'),
-            true
+            'option_repeats',    // ID of the repeating container
+            'option_add_fields', // ID of the add button
+            1,                   // Minimum number of repetitions
+            get_string('sessionadd', 'otopo'), // Label of the add button
+            true                 // Allow deletion of repetitions
         );
-
+    
+        // Prepare default values
+        $defaultvalues = [];
+    
+        // Calculate default dates for each repeated session
+        $currenttimestamp = time(); // Current date
+    
+        for ($i = 0; $i < $repeatno; $i++) {
+            // Default opening date: today
+            $default_from_date = $currenttimestamp;
+    
+            // Default closing date: 7 days after the opening date
+            $default_to_date = strtotime('+7 days', $default_from_date);
+    
+            // Assign default values for each session
+            $defaultvalues['allowsubmissionfromdate'][$i] = $default_from_date;
+            $defaultvalues['allowsubmissiontodate'][$i] = $default_to_date;
+    
+            // Optional: Default name and color
+            $defaultvalues['name'][$i] = "Session " . ($i + 1);
+            $defaultvalues['color'][$i] = '#000000';
+        }
+    
+        // Set default values in the form
+        $this->set_data($defaultvalues);
+    
+        // Add action buttons (Submit and Cancel)
         $this->add_action_buttons();
     }
 

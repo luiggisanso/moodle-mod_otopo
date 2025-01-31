@@ -26,7 +26,7 @@
             </li>
             {{#canconsult}}<li><a href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=report&object=individual&sesskey={{sesskey}}" class="nav-link {{#report}}active{{/report}}">{{#str}} menuconsult, otopo {{/str}}</a>{{/canconsult}}
             </li>
-            {{#canadmin}}<li><a href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=preview&object=sessions" class="nav-link {{#preview}}active{{/preview}}">{{#str}} menupreview, otopo {{/str}}</a>{{/canadmin}}
+            {{#canadmin}}<li><a href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=preview&object=sessions&sesskey={{sesskey}}" class="nav-link {{#preview}}active{{/preview}}">{{#str}} menupreview, otopo {{/str}}</a>{{/canadmin}}
             </li>
         </ul>
         <div class="tab-content">
@@ -70,7 +70,7 @@
                         <ul class="nav nav-tabs no-print">
                             <li class="active"><a href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=preview&object=sessions" class="nav-link {{#sessions}}active{{/sessions}}">{{#str}} menusession, otopo {{/str}}</a>
                             </li>
-                            <li><a href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=preview&object=grids" class="nav-link {{#grids}}active{{/grids}}">{{#str}} menugrid, otopo {{/str}}</a>
+                            <li><a href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=preview&object=grids&sesskey={{sesskey}}" class="nav-link {{#grids}}active{{/grids}}">{{#str}} menugrid, otopo {{/str}}</a>
                             </li>
                         </ul>
                         <div class="tab-content main">

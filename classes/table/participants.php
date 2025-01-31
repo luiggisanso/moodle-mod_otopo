@@ -81,7 +81,6 @@ class participants extends participants_table implements dynamic_table {
         $modulecontext = \context_module::instance($this->cmid);
         foreach (get_participants($this->otopo, $modulecontext) as $participant) {
             $otopos = get_user_otopos($this->otopo, $participant);
-            $sessions = prepare_data($this->otopo, $items, $otopos, $participant);
             foreach (prepare_data($this->otopo, $items, $otopos, $participant) as $session) {
                 if ($this->otopo->session || session_is_valid($this->otopo->id, $participant, $session->id)) {
                     $this->autogrades[$participant->id][$session->id] = $session->grade;

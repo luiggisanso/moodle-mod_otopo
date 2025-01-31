@@ -19,11 +19,17 @@
 }}
 {{#globalform}}
     {{#globalform.notevaluated}}
-        {{#globalform.validated}}<p class="text-danger"><b>{{#str}}notevaluated, otopo{{/str}}</b></p>{{/globalform.validated}}
-        {{^globalform.validated}}<p><b>{{#str}}notvalidated, otopo{{/str}}</b></p>{{/globalform.validated}}
+        {{#globalform.validated}}
+            <p class="text-danger"><b>{{#str}}notevaluated, otopo{{/str}}</b></p>
+        {{/globalform.validated}}
+        {{^globalform.validated}}
+            <p><b>{{#str}}notvalidated, otopo{{/str}}</b></p>
+        {{/globalform.validated}}
     {{/globalform.notevaluated}}
     <div class="grade-session">
-        <a class="collapseReview" href="#review-session" data-collapse="sessionFormCollapse"><span class="fa fa-arrow-right"></span> {{globalform.title}}</a>
+        <a class="collapseReview" data-toggle="collapse" href="#sessionFormCollapse" aria-expanded="false" aria-controls="sessionFormCollapse">
+            <span class="fa fa-arrow-right"></span> {{globalform.title}}
+        </a>
         <div class="collapse" id="sessionFormCollapse">
             {{{globalform.form}}}
         </div>
@@ -31,18 +37,12 @@
     <div class="mt-3 border-bottom mb-3"></div>
     {{#otoposforms}}
         <div class="grade-item">
-            <a class="collapseReview" href="#review-item{{id}}" data-collapse="itemFormCollapse{{id}}"><span class="fa fa-arrow-right"></span> {{title}}</a>
+            <a class="collapseReview" data-toggle="collapse" href="#itemFormCollapse{{id}}" aria-expanded="false" aria-controls="itemFormCollapse{{id}}">
+                <span class="fa fa-arrow-right"></span> {{title}}
+            </a>
             <div class="collapse form-group fitem" id="itemFormCollapse{{id}}">
                 <textarea {{#disabled}}disabled{{/disabled}} class="felement form-control" data-item="{{id}}">{{comment}}</textarea>
             </div>
         </div>
     {{/otoposforms}}
 {{/globalform}}
-
-{{#js}}
-    require(['jquery'], function($) {
-        $('.collapseReview').click(function() {
-            $('#'+$(this).data('collapse')).toggle();
-        });
-    });
-{{/js}}
