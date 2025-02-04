@@ -31,4 +31,4 @@ $plugin->requires = 2020061500; // Requires 3.9.
 $plugin->release = '1.0.14';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->component = 'mod_otopo';
-$plugin->supported = [309, 405];
+$plugin->supported = [39, 405];
