@@ -14,7 +14,7 @@ Additionally, make sure to acknowledge all contributors by adding their names to
 
 ## Table of Contents
 
-- [1.0.14](#1.0.15)
+- [1.0.15](#1.0.15)
 - [1.0.14](#1.0.14)
 - [1.0.13](#1.0.13)
 - [1.0.12](#1.0.12)
