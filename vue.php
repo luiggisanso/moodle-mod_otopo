@@ -32,7 +32,7 @@ $config = [
         "lodash" => "https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash",
         "vue" => "https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue"
             . (property_exists($CFG, 'vuejsdev') && $CFG->vuejsdev ? '' : '.min'),
-        "vuecolor" => "https://unpkg.com/vue-color/dist/vue-color.min",
+        "vuecolor" => "https://unpkg.com/vue-color@2.8.2/dist/vue-color.min",
     ],
     "shim" => [
         "vue" => [
