@@ -14,17 +14,12 @@ Additionally, make sure to acknowledge all contributors by adding their names to
 
 ## Table of Contents
 
-- [1.0.15](#1.0.15)
 - [1.0.14](#1.0.14)
 - [1.0.13](#1.0.13)
 - [1.0.12](#1.0.12)
 - [1.0.11](#1.0.11)
 - [1.0.10](#1.0.10)
 - [1.0.9](#1.0.9)
-## 1.0.15
-
-### Fixed
-Update the vue-color.min.js references to version 2.8.2.
 
 ## 1.0.14
 

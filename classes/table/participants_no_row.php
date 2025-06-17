@@ -111,8 +111,6 @@ class participants_no_row extends participants_table implements dynamic_table {
         // Render button to allow user to reset table preferences.
         echo $this->render_reset_button();
 
-        $this->print_initials_bar();
-
         echo $this->print_chart();
 
         // Render the dynamic table footer.

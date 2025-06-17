@@ -18,32 +18,19 @@
  * Form to add/remove and edit sessions.
  *
  * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr>
+ * @copyright   2024 E-learning Touch' <contact@elearningtouch.com>
+ * @copyright   2022 Kosmos <moodle@kosmos.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
-/**
- * Class of the form used to add/remove and edit sessions.
- *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class sessions_form extends moodleform {
-    /**
-     * Add elements to form.
-     */
     public function definition() {
         $mform = $this->_form;
-    
-        // Add existing hidden elements
+
         $mform->addElement('hidden', 'o', $this->_customdata['o']);
         $mform->setType('o', PARAM_INT);
         $mform->addElement('hidden', 'action', 'edit');
@@ -52,110 +39,68 @@ class sessions_form extends moodleform {
         $mform->setType('object', PARAM_TEXT);
         $mform->addElement('hidden', 'sesskey', $this->_customdata['sesskey']);
         $mform->setType('sesskey', PARAM_TEXT);
-    
-        // Default configuration for date selectors
+
+        // Default configuration for date selectors.
+        $currenttimestamp = time();
+        $startyear = (int)date('Y', strtotime('-5 year', $currenttimestamp));
+        $stopyear = (int)date('Y', strtotime('+10 years', $currenttimestamp));
+
         $defaultsdate = [
             'optional' => false,
-            'startyear' => date('Y'), // Current start year
-            'stopyear'  => date('Y') + 10, // Current end year + 10 years
-            'timezone'  => 99, // Use site's timezone
-            'step'      => 5, // 5-minute steps
+            'startyear' => $startyear,
+            'stopyear'  => $stopyear,
+            'timezone'  => 99,
+            'step'      => 5,
         ];
-    
-        // Set the number of sessions to repeat
+
         $repeatno = $this->_customdata['count_sessions'];
         if ($repeatno == 0) {
             $repeatno = $this->_customdata['sessions'];
         }
-    
-        // Define the array of repeated elements
+
         $repeatarray = [];
         $repeatarray[] = $mform->createElement('text', 'name', get_string('sessionname', 'otopo'), ['size' => '64']);
-        $colorel = $mform->createElement(
-            'text',
-            'color',
-            get_string('sessioncolor', 'otopo'),
-            ['class' => 'input-colorpicker']
-        );
+        $colorel = $mform->createElement('text', 'color', get_string('sessioncolor', 'otopo'), ['class' => 'input-colorpicker']);
         $repeatarray[] = $colorel;
         $repeatarray[] = $mform->createElement('hidden', 'id', 0);
-        $repeatarray[] = $mform->createElement(
-            'date_time_selector',
-            'allowsubmissionfromdate',
-            get_string('sessionallowsubmissionfromdate', 'otopo'),
-            $defaultsdate
-        );
-        $repeatarray[] = $mform->createElement(
-            'date_time_selector',
-            'allowsubmissiontodate',
-            get_string('sessionallowsubmissiontodate', 'otopo'),
-            $defaultsdate
-        );
-        $repeatarray[] = $mform->createElement(
-            'button',
-            'delete',
-            get_string("sessiondelete", 'otopo'),
-            ['class' => 'deletesession']
-        );
-    
-        // Define the options for repeated elements
+        $repeatarray[] = $mform->createElement('date_time_selector', 'allowsubmissionfromdate', get_string('sessionallowsubmissionfromdate', 'otopo'), $defaultsdate);
+        $repeatarray[] = $mform->createElement('date_time_selector', 'allowsubmissiontodate', get_string('sessionallowsubmissiontodate', 'otopo'), $defaultsdate);
+        $repeatarray[] = $mform->createElement('button', 'delete', get_string("sessiondelete", 'otopo'), ['class' => 'deletesession']);
+
         $repeateloptions = [];
-    
-        // Define the types of the elements
         $mform->setType('name', PARAM_TEXT);
         $mform->setType('color', PARAM_TEXT);
         $mform->setType('id', PARAM_INT);
-    
-        // Define the validation rules
+
         $repeateloptions['allowsubmissionfromdate']['rule'] = 'required';
         $repeateloptions['allowsubmissiontodate']['rule'] = 'required';
-    
-        // Create the repeated elements
+
         $this->repeat_elements(
             $repeatarray,
             $repeatno,
             $repeateloptions,
-            'option_repeats',    // ID of the repeating container
-            'option_add_fields', // ID of the add button
-            1,                   // Minimum number of repetitions
-            get_string('sessionadd', 'otopo'), // Label of the add button
-            true                 // Allow deletion of repetitions
+            'option_repeats',
+            'option_add_fields',
+            1,
+            get_string('sessionadd', 'otopo'),
+            true
         );
-    
-        // Prepare default values
+
         $defaultvalues = [];
-    
-        // Calculate default dates for each repeated session
-        $currenttimestamp = time(); // Current date
-    
+
         for ($i = 0; $i < $repeatno; $i++) {
-            // Default opening date: today
             $default_from_date = $currenttimestamp;
-    
-            // Default closing date: 7 days after the opening date
             $default_to_date = strtotime('+7 days', $default_from_date);
-    
-            // Assign default values for each session
             $defaultvalues['allowsubmissionfromdate'][$i] = $default_from_date;
             $defaultvalues['allowsubmissiontodate'][$i] = $default_to_date;
-    
-            // Optional: Default name and color
             $defaultvalues['name'][$i] = "Session " . ($i + 1);
             $defaultvalues['color'][$i] = '#000000';
         }
-    
-        // Set default values in the form
+
         $this->set_data($defaultvalues);
-    
-        // Add action buttons (Submit and Cancel)
         $this->add_action_buttons();
     }
 
-    /**
-     * Set the form's default data.
-     *
-     * @param array Form's default data.
-     */
     public function set_data($defaultvalues) {
         if (is_object($defaultvalues)) {
             $defaultvalues = (array)$defaultvalues;
@@ -181,13 +126,6 @@ class sessions_form extends moodleform {
         parent::set_data($defaultvalues);
     }
 
-    /**
-     * Validate the form's data.
-     *
-     * @param array $data The form's data.
-     * @param array $files The form's files.
-     * @return array of errors.
-     */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         for ($i = 0; $i < $data['option_repeats']; $i++) {

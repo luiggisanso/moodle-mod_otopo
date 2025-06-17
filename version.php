@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2025050600;
+$plugin->version = 2025061700;
 $plugin->requires = 2020061500; // Requires 3.9.
-$plugin->release = '1.0.15';
+$plugin->release = '1.1.16';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->component = 'mod_otopo';
 $plugin->supported = [39, 405];

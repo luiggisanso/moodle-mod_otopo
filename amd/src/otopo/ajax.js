@@ -54,7 +54,16 @@ define(['core/ajax'], function(Ajax) {
             var sessions = await promises[0];
             // sessions est un tableau d'objets : [ {id: ..., name: ...}, ... ], triés par id ASC
             return sessions;
+        },
+        getLastUserSession: async function(otopo) {
+            var promises = Ajax.call([{
+                methodname: 'mod_otopo_get_last_user_session',
+                args: {otopo: otopo}
+            }]);
+            var lastSession = await promises[0];
+            return lastSession;
         }
+        
         
     };
 });

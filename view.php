@@ -738,41 +738,6 @@ if ($canadmin || $cangrade || $canexportresults) {
 
             $content .= $participanttablehtml;
 
-            $perpagesize = DEFAULT_PAGE_SIZE;
-            $perpagevisible = false;
-            $perpagestring = '';
-
-            $perpageurl = new moodle_url('/mod/otopo/view.php', [
-                'id' => $cm->id,
-                'action' => 'report',
-                'object' => 'individual',
-            ]);
-
-            if ($perpage == SHOW_ALL_PAGE_SIZE && $participanttable->totalrows > DEFAULT_PAGE_SIZE) {
-                $perpageurl->param('perpage', $participanttable->totalrows);
-                $perpagesize = SHOW_ALL_PAGE_SIZE;
-                $perpagevisible = true;
-                $perpagestring = get_string('showperpage', '', DEFAULT_PAGE_SIZE);
-            } else if ($participanttable->get_page_size() < $participanttable->totalrows) {
-                $perpageurl->param('perpage', SHOW_ALL_PAGE_SIZE);
-                $perpagesize = SHOW_ALL_PAGE_SIZE;
-                $perpagevisible = true;
-                $perpagestring = get_string('showall', '', $participanttable->totalrows);
-            }
-
-            $perpageclasses = '';
-            if (!$perpagevisible) {
-                $perpageclasses = 'hidden';
-            }
-            $content .= $OUTPUT->container(html_writer::link(
-                $perpageurl,
-                $perpagestring,
-                [
-                    'data-action' => 'showcount',
-                    'data-target-page-size' => $perpagesize,
-                    'class' => $perpageclasses,
-                ]
-            ), [], 'showall');
             $bulkoptions = (object) [
                 'uniqueid' => $participanttable->uniqueid,
             ];

@@ -32,12 +32,7 @@ define([
                     this.$root.$data.otopos[this.item.id].justification : "",
 
                 comment: this.$root.$data.session && this.item.id in this.$root.$data.otopos ?
-                    this.$root.$data.otopos[this.item.id].comment : "",
-
-                // --- NEW PROPERTY ---.
-                // Used to store the justification from the previous session.
-                // We will display it in a "placeholder".
-                placeholderJustification: ""
+                    this.$root.$data.otopos[this.item.id].comment : ""
             };
         },
 
@@ -57,8 +52,8 @@ define([
                             let found = prevData.find(obj => obj.item === this.item.id);
                             if (found && found.justification) {
                                 console.log("Found matching justification: ", found.justification);
-                                // We store this justification in 'placeholderJustification'.
-                                this.placeholderJustification = found.justification;
+                                // Inject directly into the model to hard-fill the textarea
+                                this.justification = found.justification;
                             } else {
                                 console.log("No matching item found in prevData for item id: " + this.item.id);
                             }
@@ -139,12 +134,12 @@ define([
                                 v-model="justification"
                                 :disabled="disabledJustification"
                                 class="form-control border-0"
-                                :placeholder="placeholderJustification || strings.yourjustification"
+                                :placeholder="strings.yourjustification"
                                 @input="processChange()"
                                 rows="5"
                             ></textarea>
                         </div>
-                        <small class="text-muted">Veuillez modifier ou reprendre le texte ci-dessus si nécessaire.</small>
+                        <small class="text-muted">Veuillez modifier le texte ci-dessus si nécessaire.</small>
                     </div>
                     <div class="comment border rounded pt-1 pl-3 pr-3 mb-2 shadow-sm only-print">
                         <div class="input-group mb-3">
