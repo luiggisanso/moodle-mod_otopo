@@ -13,12 +13,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
 namespace mod_otopo\output;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__ . '/../../locallib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once __DIR__.'/../../locallib.php';
+require_once $CFG->libdir.'/formslib.php';
 
 use moodleform;
 use renderable;
@@ -29,64 +28,80 @@ use templatable;
 /**
  * Class defining the templates page renderer.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class templates_page implements renderable, templatable {
-    /** @var object|null $template Otopo template. */
+class templates_page implements renderable, templatable
+{
+
+    /**
+     * @var object|null $template Otopo template.
+     */
     private ?object $template;
 
-    /** @var string $action Action performed. */
+    /**
+     * @var string $action Action performed.
+     */
     private string $action;
 
-    /** @var moodleform|null $form to show. */
+    /**
+     * @var moodleform|null $form to show.
+     */
     private ?moodleform $form;
 
-    /** @var int $cmid from module. */
+    /**
+     * @var integer $cmid from module.
+     */
     private int $cmid;
+
 
     /**
      * Renderable constructor.
      *
-     * @param object|null $template The template info.
-     * @param string $action The action.
-     * @param moodleform|null $form The form.
-     * @param int $cmid Course module ID.
+     * @param object|null     $template The template info.
+     * @param string          $action   The action.
+     * @param moodleform|null $form     The form.
+     * @param integer         $cmid     Course module ID.
      */
-    public function __construct(?object $template, string $action = 'show', ?moodleform $form = null, int $cmid = 0) {
+    public function __construct(?object $template, string $action='show', ?moodleform $form=null, int $cmid=0)
+    {
         $this->template = $template;
-        $this->action = $action;
-        $this->form = $form;
-        $this->cmid = $cmid;
-    }
+        $this->action   = $action;
+        $this->form     = $form;
+        $this->cmid     = $cmid;
+
+    }//end __construct()
+
 
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
-     * @param renderer_base $output Used to do a final render of any components that need to be rendered for export.
+     * @param  renderer_base $output Used to do a final render of any components that need to be rendered for export.
      * @return object|array
      */
-    public function export_for_template(renderer_base $output) {
-        $data = new stdClass();
-        $data->show = false;
-        $data->edit = false;
-        $data->create = false;
-        $data->form = $this->form ? $this->form->render() : "";
-        $data->template = $this->template;
+    public function export_for_template(renderer_base $output)
+    {
+        $data            = new stdClass();
+        $data->show      = false;
+        $data->edit      = false;
+        $data->create    = false;
+        $data->form      = $this->form ? $this->form->render() : '';
+        $data->template  = $this->template;
         $data->templates = null;
-        $data->items = null;
-        $data->cmid = $this->cmid;
-        $data->sesskey = sesskey();
+        $data->items     = null;
+        $data->cmid      = $this->cmid;
+        $data->sesskey   = sesskey();
         if (!$this->template) {
             $data->templates = array_values(get_templates());
         } else {
-            $items = get_items_sorted_from_otopo(-$this->template->id);
+            $items               = get_items_sorted_from_otopo(-$this->template->id);
             $data->nbrdegreesmax = table_items($items);
-            $data->items = array_values($items);
+            $data->items         = array_values($items);
         }
+
         if ($this->action == 'edit') {
             $data->edit = true;
         } else if ($this->action == 'create') {
@@ -94,6 +109,10 @@ class templates_page implements renderable, templatable {
         } else {
             $data->show = true;
         }
+
         return $data;
-    }
-}
+
+    }//end export_for_template()
+
+
+}//end class

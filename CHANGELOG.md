@@ -14,12 +14,36 @@ Additionally, make sure to acknowledge all contributors by adding their names to
 
 ## Table of Contents
 
+- [1.1.0](#1.1.0)
 - [1.0.14](#1.0.14)
 - [1.0.13](#1.0.13)
 - [1.0.12](#1.0.12)
 - [1.0.11](#1.0.11)
 - [1.0.10](#1.0.10)
 - [1.0.9](#1.0.9)
+
+## 1.1.0
+
+### Added
+
+- Full support for group report display with cleaned navigation and error-free linking.
+- Internal logic to resume student inputs from previously saved session data.
+- Issue [#6](/../../issues/6): Carry forward data from one session to the next - Adds the ability to automatically pre-fill a new session with answers and justifications from the previous session.
+- Issue [#8](/../../issues/8): Wrong display in group reports - Group reports are now accessible and display correctly.
+- Partial recovery of previous session dates (currently limited to sessions from 2024).
+
+### Fixed
+
+- Bug report raised at the end of the user doc no longer appears in this version.
+- Copyrights and [MAINTAINERS.md](MAINTAINERS.md).
+- Fixed a visual bug causing broken links when accessing group report views.
+- Issue [#5](/../../issues/5): The visible only to teachers button does not work - The intended behaviour of hiding some elements from students now works as intended.
+- Removed an error caused by missing or malformed session data after session resumption.
+
+### Changed
+
+- Code refactor for better handling of display logic during session grading.
+- The default behavior for hiding teacher comments now works more consistently: individual item comments and grades are hidden, though the global comment is still visible (this can be improved later).
 
 ## 1.0.14
 

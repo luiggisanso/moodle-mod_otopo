@@ -17,11 +17,11 @@
 /**
  * Plugin tables.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_otopo\table;
@@ -31,19 +31,29 @@ use core_table\local\filter\integer_filter;
 /**
  * Class for filtering the participant table.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class participants_filterset extends \core_user\table\participants_filterset {
+class participants_filterset extends \core_user\table\participants_filterset
+{
+
+
     /**
      * Get the required filters.
      *
      * @return array.
      */
-    public function get_required_filters(): array {
-        return [ 'courseid' => integer_filter::class, 'otopo' => integer_filter::class ];
-    }
-}
+    public function get_required_filters(): array
+    {
+        return [
+            'courseid' => integer_filter::class,
+            'otopo'    => integer_filter::class,
+        ];
+
+    }//end get_required_filters()
+
+
+}//end class

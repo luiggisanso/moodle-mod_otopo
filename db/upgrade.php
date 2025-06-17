@@ -17,19 +17,21 @@
 /**
  * Plugin upgrade logic.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 
  /**
   * Upgrade the plugin.
   *
-  * @param int $oldversion The old version.
+  * @param integer $oldversion The old version.
   */
-function xmldb_otopo_upgrade(int $oldversion) {
+function xmldb_otopo_upgrade(int $oldversion)
+{
     global $CFG, $DB;
 
     $dbman = $DB->get_manager();
@@ -53,17 +55,19 @@ function xmldb_otopo_upgrade(int $oldversion) {
     }
 
     if ($oldversion < 2022070500) {
-        $table = new xmldb_table('otopo');
-        $field = new xmldb_field('event', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table      = new xmldb_table('otopo');
+        $field      = new xmldb_field('event', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         $fieldstart = new xmldb_field('event_start', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $fieldend = new xmldb_field('event_end', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $fieldend   = new xmldb_field('event_end', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
 
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
         }
+
         if (!$dbman->field_exists($table, $fieldstart)) {
             $dbman->add_field($table, $fieldstart);
         }
+
         if (!$dbman->field_exists($table, $fieldend)) {
             $dbman->add_field($table, $fieldend);
         }
@@ -73,27 +77,30 @@ function xmldb_otopo_upgrade(int $oldversion) {
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
         }
+
         if (!$dbman->field_exists($table, $fieldstart)) {
             $dbman->add_field($table, $fieldstart);
         }
+
         if (!$dbman->field_exists($table, $fieldend)) {
             $dbman->add_field($table, $fieldend);
         }
 
         // Assignment savepoint reached.
         upgrade_mod_savepoint(true, 2022070500, 'otopo');
-    }
+    }//end if
 
     if ($oldversion < 2023020100) {
-        $table = new xmldb_table('otopo_user_otopo');
-        $field = new xmldb_field('user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'id');
+        $table    = new xmldb_table('otopo_user_otopo');
+        $field    = new xmldb_field('user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'id');
         $oldindex = new xmldb_index('user', XMLDB_INDEX_NOTUNIQUE, ['user']);
-        $index = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+        $index    = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
 
         // Drop old index.
         if ($dbman->index_exists($table, $oldindex)) {
             $dbman->drop_index($table, $oldindex);
         }
+
         // Rename field.
         $dbman->rename_field($table, $field, 'userid');
         // Create new index.
@@ -107,6 +114,7 @@ function xmldb_otopo_upgrade(int $oldversion) {
         if ($dbman->index_exists($table, $oldindex)) {
             $dbman->drop_index($table, $oldindex);
         }
+
         // Rename field.
         $dbman->rename_field($table, $field, 'userid');
         // Create new index.
@@ -120,6 +128,7 @@ function xmldb_otopo_upgrade(int $oldversion) {
         if ($dbman->index_exists($table, $oldindex)) {
             $dbman->drop_index($table, $oldindex);
         }
+
         // Rename field.
         $dbman->rename_field($table, $field, 'userid');
         // Create new index.
@@ -129,7 +138,8 @@ function xmldb_otopo_upgrade(int $oldversion) {
 
         // Otopo savepoint reached.
         upgrade_mod_savepoint(true, 2023020100, 'otopo');
-    }
+    }//end if
 
     return true;
-}
+
+}//end xmldb_otopo_upgrade()

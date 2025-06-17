@@ -17,44 +17,65 @@
 /**
  * Define all the backup steps that will be used by the backup_otopo_activity_task.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Define the complete otopo structure for backup, with file and id annotations.
  */
-class backup_otopo_activity_structure_step extends backup_activity_structure_step {
+class backup_otopo_activity_structure_step extends backup_activity_structure_step
+{
+
+
     /**
      * Define the structure of the backup workflow.
      *
      * @return backup_nested_element
      */
-    protected function define_structure() {
-
+    protected function define_structure()
+    {
         // To know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $otopo = new backup_nested_element('otopo', [ 'id' ], [
-            'name', 'intro', 'introformat', 'timemodified',
-            'showteachercomments', 'session', 'sessions', 'limit_sessions',
-            'grade', 'gradeonlyforteacher',
-            'allowsubmissionfromdate', 'allowsubmissiontodate',
-            'sessionvisual', 'cohortvisual', 'completionsubmit',
-        ]);
+        $otopo = new backup_nested_element(
+            'otopo',
+            [ 'id' ],
+            [
+                'name',
+                'intro',
+                'introformat',
+                'timemodified',
+                'showteachercomments',
+                'session',
+                'sessions',
+                'limit_sessions',
+                'grade',
+                'gradeonlyforteacher',
+                'allowsubmissionfromdate',
+                'allowsubmissiontodate',
+                'sessionvisual',
+                'cohortvisual',
+                'completionsubmit',
+            ]
+        );
 
         $sessions = new backup_nested_element('nested_sessions');
 
-        $session = new backup_nested_element('session', [ 'id' ], [
-            'name',
-            'color',
-            'allowsubmissionfromdate',
-            'allowsubmissiontodate',
-        ]);
+        $session = new backup_nested_element(
+            'session',
+            [ 'id' ],
+            [
+                'name',
+                'color',
+                'allowsubmissionfromdate',
+                'allowsubmissiontodate',
+            ]
+        );
 
         $items = new backup_nested_element('items');
 
@@ -66,14 +87,18 @@ class backup_otopo_activity_structure_step extends backup_activity_structure_ste
 
         $userotopos = new backup_nested_element('user_otopos');
 
-        $userotopo = new backup_nested_element('user_otopo', [ 'id' ], [
-            'user',
-            'session',
-            'degree',
-            'justification',
-            'lastmodificationdate',
-            'teacher_comment',
-        ]);
+        $userotopo = new backup_nested_element(
+            'user_otopo',
+            [ 'id' ],
+            [
+                'user',
+                'session',
+                'degree',
+                'justification',
+                'lastmodificationdate',
+                'teacher_comment',
+            ]
+        );
 
         $uservalidsessions = new backup_nested_element('user_valid_sessions');
 
@@ -124,5 +149,8 @@ class backup_otopo_activity_structure_step extends backup_activity_structure_ste
 
         // Return the root element (otopo), wrapped into standard activity structure.
         return $this->prepare_activity_structure($otopo);
-    }
-}
+
+    }//end define_structure()
+
+
+}//end class

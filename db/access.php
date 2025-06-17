@@ -17,89 +17,83 @@
 /**
  * Plugin capabilities.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
 
-    'mod/otopo:addinstance' => [
-        'riskbitmask' => RISK_XSS,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => [
+    'mod/otopo:addinstance'          => [
+        'riskbitmask'          => RISK_XSS,
+        'captype'              => 'write',
+        'contextlevel'         => CONTEXT_COURSE,
+        'archetypes'           => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
+            'manager'        => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
 
-    'mod/otopo:view' => [
-        'captype' => 'read',
+    'mod/otopo:view'                 => [
+        'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'guest' => CAP_ALLOW,
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
+        'archetypes'   => [
+            'guest'          => CAP_ALLOW,
+            'student'        => CAP_ALLOW,
+            'teacher'        => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
+            'manager'        => CAP_ALLOW,
         ],
     ],
 
-    'mod/otopo:fill' => [
-        'captype' => 'write',
+    'mod/otopo:fill'                 => [
+        'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'student' => CAP_ALLOW,
-        ],
+        'archetypes'   => ['student' => CAP_ALLOW],
     ],
 
-    'mod/otopo:grade' => [
-        'captype' => 'write',
+    'mod/otopo:grade'                => [
+        'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'teacher' => CAP_ALLOW,
+        'archetypes'   => [
+            'teacher'        => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
+            'manager'        => CAP_ALLOW,
         ],
     ],
 
-    'mod/otopo:admin' => [
-        'captype' => 'write',
+    'mod/otopo:admin'                => [
+        'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
+        'archetypes'   => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
+            'manager'        => CAP_ALLOW,
         ],
     ],
 
-    'mod/otopo:exportresults' => [
-        'captype' => 'write',
+    'mod/otopo:exportresults'        => [
+        'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'teacher' => CAP_ALLOW,
+        'archetypes'   => [
+            'teacher'        => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
         ],
     ],
 
     'mod/otopo:receivenotifications' => [
-        'captype' => 'read',
+        'captype'      => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'student' => CAP_ALLOW,
-        ],
+        'archetypes'   => ['student' => CAP_ALLOW],
     ],
 
-    'mod/otopo:managetemplates' => [
-        'captype' => 'write',
+    'mod/otopo:managetemplates'      => [
+        'captype'      => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'manager' => CAP_ALLOW,
-        ],
+        'archetypes'   => ['manager' => CAP_ALLOW],
     ],
 ];

@@ -17,37 +17,43 @@
 /**
  * Form to grade a user.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->libdir/formslib.php");
+require_once "$CFG->libdir/formslib.php";
 
 /**
  * Class of the form used to grade a user.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class grade_form extends moodleform {
-    /** @var object Otopo instance. */
+class grade_form extends moodleform
+{
+
+    /**
+     * @var object Otopo instance.
+     */
     private object $otopo;
+
 
     /**
      * Add elements to form.
      */
-    public function definition() {
+    public function definition()
+    {
         global $CFG, $DB, $PAGE, $OUTPUT;
 
         $this->otopo = $this->_customdata['otopo'];
-        $data = $this->_customdata['grader'];
+        $data        = $this->_customdata['grader'];
 
         $mform = $this->_form;
         $mform->setAttributes(['class' => 'gradeform']);
@@ -65,42 +71,49 @@ class grade_form extends moodleform {
                 'editor',
                 'comment',
                 get_string('comment', 'otopo'),
-                ['enable_filemanagement' => false, 'h5p' => false]
+                [
+                    'enable_filemanagement' => false,
+                    'h5p'                   => false,
+                ]
             );
             $mform->setType('comment', PARAM_RAW);
         }
+
         if ($this->otopo->grade > 0) {
-            $name = get_string('gradeoutof', 'assign', $this->otopo->grade);
+            $name           = get_string('gradeoutof', 'assign', $this->otopo->grade);
             $gradingelement = $mform->addElement('text', 'grade', $name, $this->_customdata['disabled'] ? 'disabled' : '');
             $mform->addHelpButton('grade', 'gradeoutofhelp', 'assign');
             $mform->setType('grade', PARAM_RAW);
             $mform->setDefault('grade', $this->_customdata['default_grade']);
         } else {
-            $grademenu = [-1 => get_string("nograde")] + make_grades_menu($this->otopo->grade);
+            $grademenu = ([-1 => get_string('nograde')] + make_grades_menu($this->otopo->grade));
             if (count($grademenu) > 1) {
                 $gradingelement = $mform->addElement(
                     'select',
                     'grade',
-                    get_string('grade') . ':',
+                    get_string('grade').':',
                     $grademenu,
                     $this->_customdata['disabled'] ? 'disabled' : ''
                 );
                 if (!empty($data->grade)) {
-                    $data->grade = (int)unformat_float($data->grade);
+                    $data->grade = (int) unformat_float($data->grade);
                 }
+
                 $mform->setType('grade', PARAM_INT);
             }
-        }
+        }//end if
 
         if (!empty($data->comment)) {
-            $comment = $data->comment;
+            $comment       = $data->comment;
             $data->comment = ['text' => $comment];
         }
 
         if ($data) {
             $this->set_data($data);
         }
-    }
+
+    }//end definition()
+
 
     /**
      * This is required so when using "Save and next", each form is not defaulted to the previous form.
@@ -109,21 +122,25 @@ class grade_form extends moodleform {
      *
      * @return string - The unique identifier for this form.
      */
-    protected function get_form_identifier() {
+    protected function get_form_identifier()
+    {
         $grader = $this->_customdata['grader'];
-        return get_class($this) . '_' . $grader->userid . '_' . $grader->session;
-    }
+        return get_class($this).'_'.$grader->userid.'_'.$grader->session;
+
+    }//end get_form_identifier()
+
 
     /**
      * Validate the form's data.
      *
-     * @param array $data The form's data.
-     * @param array $files The form's files.
+     * @param  array $data  The form's data.
+     * @param  array $files The form's files.
      * @return array of errors.
      */
-    public function validation($data, $files) {
+    public function validation($data, $files)
+    {
         global $DB;
-        $errors = parent::validation($data, $files);
+        $errors   = parent::validation($data, $files);
         $instance = $this->otopo;
 
         // Advanced grading.
@@ -143,11 +160,15 @@ class grade_form extends moodleform {
             // This is a scale.
             if ($scale = $DB->get_record('scale', ['id' => -($instance->grade)])) {
                 $scaleoptions = make_menu_from_list($scale->scale);
-                if ((int)$data['grade'] !== -1 && !array_key_exists((int)$data['grade'], $scaleoptions)) {
+                if ((int) $data['grade'] !== -1 && !array_key_exists((int) $data['grade'], $scaleoptions)) {
                     $errors['grade'] = get_string('invalidgradeforscale', 'assign');
                 }
             }
         }
+
         return $errors;
-    }
-}
+
+    }//end validation()
+
+
+}//end class

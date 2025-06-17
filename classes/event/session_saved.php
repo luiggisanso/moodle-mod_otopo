@@ -17,11 +17,11 @@
 /**
  * Plugin events.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_otopo\event;
@@ -29,29 +29,39 @@ namespace mod_otopo\event;
 /**
  * Class of an event triggered when a session is saved.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class session_saved extends \mod_otopo\event\base {
+class session_saved extends \mod_otopo\event\base
+{
+
+
     /**
      * Init method.
      *
      * @return void
      */
-    protected function init() {
-        $this->data['crud'] = 'c';
+    protected function init()
+    {
+        $this->data['crud']     = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-    }
+
+    }//end init()
+
 
     /**
      * Returns localised general event name.
      *
      * @return string
      */
-    public static function get_name() {
+    public static function get_name()
+    {
         return get_string('sessionsaved', 'mod_otopo');
-    }
-}
+
+    }//end get_name()
+
+
+}//end class

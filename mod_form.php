@@ -17,31 +17,35 @@
 /**
  * Form to create/edit activities.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/course/moodleform_mod.php');
-require_once($CFG->dirroot . '/mod/otopo/lib.php');
+require_once $CFG->dirroot.'/course/moodleform_mod.php';
+require_once $CFG->dirroot.'/mod/otopo/lib.php';
 
 /**
  * Class of the form used to create/edit activities.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_otopo_mod_form extends moodleform_mod {
+class mod_otopo_mod_form extends moodleform_mod
+{
+
+
     /**
      * Add elements to form.
      */
-    public function definition() {
+    public function definition()
+    {
         global $CFG, $DB, $OUTPUT;
 
         $mform =& $this->_form;
@@ -59,12 +63,10 @@ class mod_otopo_mod_form extends moodleform_mod {
         $mform->addElement('advcheckbox', 'showteachercomments', '', get_string('showteachercomments', 'otopo'), null, [0, 1]);
         $mform->setDefault('showteachercomments', get_config('mod_otopo', 'default_showteachercomments'));
         // -------------------------------------------------------------------------------
-
         // -------------------------------------------------------------------------------
-
         $this->standard_grading_coursemodule_elements();
 
-        $mform->addElement('advcheckbox', 'gradeonlyforteacher', '', get_string('gradeonlyforteacher', 'otopo'), null, [0,1]);
+        $mform->addElement('advcheckbox', 'gradeonlyforteacher', '', get_string('gradeonlyforteacher', 'otopo'), null, [0, 1]);
 
         // If $this->current->grade == 0, then the grade type is 'none'.
         if (isset($this->current->gradeonlyforteacher)) {
@@ -72,23 +74,23 @@ class mod_otopo_mod_form extends moodleform_mod {
         } else {
             $mform->setDefault('gradeonlyforteacher', get_config('mod_otopo', 'default_gradeonlyforteacher'));
         }
-        
+
         // Hide the checkbox if the grade type is "none".
         $mform->hideIf('gradeonlyforteacher', 'grade[modgrade_type]', 'eq', 'none');
 
-
-        
-        
-
                 // -------------------------------------------------------------------------------
-
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'session_options', get_string('sessionoptions', 'otopo'));
 
-        $mform->addElement('select', 'session', get_string('session', 'otopo'), [
-            get_string('sessionopen', 'otopo'),
-            get_string('sessionlimited', 'otopo'),
-        ]);
+        $mform->addElement(
+            'select',
+            'session',
+            get_string('session', 'otopo'),
+            [
+                get_string('sessionopen', 'otopo'),
+                get_string('sessionlimited', 'otopo'),
+            ]
+        );
         $mform->addHelpButton('session', 'session', 'otopo');
         $mform->setDefault('session', 1);
 
@@ -108,6 +110,7 @@ class mod_otopo_mod_form extends moodleform_mod {
                 $mform->disabledIf('sessions', 'name', 'neq', '0');
             }
         }
+
         $mform->addElement(
             'select',
             'limit_sessions',
@@ -119,11 +122,10 @@ class mod_otopo_mod_form extends moodleform_mod {
         $mform->hideIf('limit_sessions', 'session', 'eq', 1);
         $mform->disabledIf('limit_sessions', 'session', 'eq', 1);
         // -------------------------------------------------------------------------------
-
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'disponibility', get_string('disponibility', 'otopo'));
         $defaultsdate = [
-            'optional' => true,
+            'optional'  => true,
             'startyear' => 2020,
             'stopyear'  => 2040,
             'timezone'  => 99,
@@ -148,16 +150,15 @@ class mod_otopo_mod_form extends moodleform_mod {
         }
 
         // -------------------------------------------------------------------------------
-
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'visual', get_string('visual', 'otopo'));
 
-        $sessionvisuals = [];
+        $sessionvisuals   = [];
         $sessionvisuals[] = $mform->createElement(
             'radio',
             'sessionvisual',
             '',
-            '<img src="' . $OUTPUT->image_url('radar', 'mod_otopo') . '">',
+            '<img src="'.$OUTPUT->image_url('radar', 'mod_otopo').'">',
             0,
             ['class' => 'visual']
         );
@@ -165,51 +166,54 @@ class mod_otopo_mod_form extends moodleform_mod {
             'radio',
             'sessionvisual',
             '',
-            '<img src="' . $OUTPUT->image_url('bar', 'mod_otopo') . '">',
+            '<img src="'.$OUTPUT->image_url('bar', 'mod_otopo').'">',
             1,
             ['class' => 'visual']
         );
         $mform->addGroup($sessionvisuals, 'sessionvisual', get_string('sessionvisual', 'otopo'), [' '], false);
         $mform->setDefault('sessionvisual', get_config('mod_otopo', 'default_sessionvisual'));
 
-        $cohortvisuals = [];
+        $cohortvisuals   = [];
         $cohortvisuals[] = $mform->createElement(
             'radio',
             'cohortvisual',
             '',
-            '<img src="' . $OUTPUT->image_url('stacked_bar', 'mod_otopo') . '">',
+            '<img src="'.$OUTPUT->image_url('stacked_bar', 'mod_otopo').'">',
             0,
             ['class' => 'visual']
         );
         $mform->addGroup($cohortvisuals, 'cohortvisual', get_string('cohortvisual', 'otopo'), [' '], false);
         $mform->setDefault('cohortvisual', get_config('mod_otopo', 'default_cohortvisual'));
         // -------------------------------------------------------------------------------
-
         // -------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
         $this->apply_admin_defaults();
         // -------------------------------------------------------------------------------
-
         $this->add_action_buttons();
-    }
+
+    }//end definition()
+
 
     /**
      * Validate the form's data.
      *
-     * @param array $data The form's data.
-     * @param array $files The form's files.
+     * @param  array $data  The form's data.
+     * @param  array $files The form's files.
      * @return array of errors.
      */
-    public function validation($data, $files) {
+    public function validation($data, $files)
+    {
         $errors = parent::validation($data, $files);
-        if (
-            $data['allowsubmissionfromdate'] && $data['allowsubmissiontodate']
+        if ($data['allowsubmissionfromdate'] && $data['allowsubmissiontodate']
             && $data['allowsubmissionfromdate'] >= $data['allowsubmissiontodate']
         ) {
             $errors['allowsubmissiontodate'] = get_string('allowsubmissiondateerror', 'otopo');
         }
+
         return $errors;
-    }
+
+    }//end validation()
+
 
     /**
      * Allows module to modify the data returned by form get_data().
@@ -219,7 +223,8 @@ class mod_otopo_mod_form extends moodleform_mod {
      *
      * @param object $data the form data to be modified.
      */
-    public function data_postprocessing($data) {
+    public function data_postprocessing($data)
+    {
         parent::data_postprocessing($data);
         // Set up completion section even if checkbox is not ticked.
         if (!empty($data->completionunlocked)) {
@@ -227,14 +232,17 @@ class mod_otopo_mod_form extends moodleform_mod {
                 $data->completionsubmit = 0;
             }
         }
-    }
+
+    }//end data_postprocessing()
+
 
     /**
      * Add completion rules to the form.
      *
      * @return array of rules.
      */
-    public function add_completion_rules() {
+    public function add_completion_rules()
+    {
         $mform =& $this->_form;
 
         $mform->addElement(
@@ -247,14 +255,20 @@ class mod_otopo_mod_form extends moodleform_mod {
         // Enable this completion rule by default.
         $mform->setDefault('completionsubmit', 1);
         return ['completionsubmit'];
-    }
+
+    }//end add_completion_rules()
+
 
     /**
      * Return if completion rules are enabled.
      *
-     * @return bool True if rules are enabled, false otherwise.
+     * @return boolean True if rules are enabled, false otherwise.
      */
-    public function completion_rule_enabled($data) {
+    public function completion_rule_enabled($data)
+    {
         return !empty($data['completionsubmit']);
-    }
-}
+
+    }//end completion_rule_enabled()
+
+
+}//end class

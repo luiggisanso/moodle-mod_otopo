@@ -17,11 +17,11 @@
 /**
  * Plugin events.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_otopo\event;
@@ -29,25 +29,32 @@ namespace mod_otopo\event;
 /**
  * Class of an event triggered when a module's list is viewed.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed
+{
+
+
     /**
      * Create the event from course record.
      *
-     * @param object $course
+     * @param  object $course
      * @return course_module_instance_list_viewed
      */
-    public static function create_from_course(object $course) {
+    public static function create_from_course(object $course)
+    {
         $params = [
             'context' => \context_course::instance($course->id),
         ];
-        $event = self::create($params);
+        $event  = self::create($params);
         $event->add_record_snapshot('course', $course);
         return $event;
-    }
-}
+
+    }//end create_from_course()
+
+
+}//end class

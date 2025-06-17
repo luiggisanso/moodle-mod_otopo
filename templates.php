@@ -17,39 +17,42 @@
 /**
  * The templates management page.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../config.php');
-require_once(__DIR__ . '/templateform.php');
-require_once(__DIR__ . '/locallib.php');
+require_once __DIR__.'/../../config.php';
+require_once __DIR__.'/templateform.php';
+require_once __DIR__.'/locallib.php';
 
 // Future improvements: Call $DB in a dedicated class ;-).
 global $DB;
 
-/***********
+/*
  * Params. *
- ***********/
-$id = optional_param('id', 0, PARAM_INT);
-$action = optional_param('action', 'show', PARAM_TEXT);
-$cmid = optional_param('cmid', 0, PARAM_INT);
+ */
+$id        = optional_param('id', 0, PARAM_INT);
+$action    = optional_param('action', 'show', PARAM_TEXT);
+$cmid      = optional_param('cmid', 0, PARAM_INT);
 $returnurl = optional_param('returnurl', null, PARAM_LOCALURL);
-$sesskey = optional_param('sesskey', null, PARAM_TEXT);
+$sesskey   = optional_param('sesskey', null, PARAM_TEXT);
 
-/******************
+/*
  * Access checks. *
- ******************/
+ */
 // Get the course data and cm instance from $cmid.
 if ($cmid) {
-    [ $course, $cm ] = get_course_and_cm_from_cmid($cmid);
+    [
+        $course,
+        $cm,
+    ] = get_course_and_cm_from_cmid($cmid);
 } else {
     // Fallback to site wide require_login.
     $course = null;
-    $cm = null;
+    $cm     = null;
 }
 
 // Check login and sesskey.
@@ -63,50 +66,56 @@ if ($action !== 'show') {
 $context = $cm ? $cm->context : context_system::instance();
 require_capability('mod/otopo:managetemplates', $context);
 
-/*****************************
+/*
  * Template data from param. *
- *****************************/
+ */
 $template = $id ? $DB->get_record('otopo_template', ['id' => $id]) : null;
 
-/***************
+/*
  * Page setup. *
- ***************/
-$url = new moodle_url('/mod/otopo/templates.php', [
-    'id' => $template ? $template->id : null,
-    'action' => $action,
-    'cmid' => $cmid,
-    'returnurl' => $returnurl,
-    'sesskey' => $sesskey,
-]);
+ */
+$url = new moodle_url(
+    '/mod/otopo/templates.php',
+    [
+        'id'        => $template ? $template->id : null,
+        'action'    => $action,
+        'cmid'      => $cmid,
+        'returnurl' => $returnurl,
+        'sesskey'   => $sesskey,
+    ]
+);
 $PAGE->set_url($url);
 $PAGE->set_context($context);
-$PAGE->set_title(get_string('pluginname', 'otopo') . ' - ' . get_string('otopo:managetemplates', 'otopo'));
+$PAGE->set_title(get_string('pluginname', 'otopo').' - '.get_string('otopo:managetemplates', 'otopo'));
 $PAGE->set_heading(get_string('otopo:managetemplates', 'otopo'));
 
-/*******************
+/*
  * Some variables. *
- *******************/
+ */
 $returnurl = $returnurl ? new moodle_url($returnurl) : new moodle_url($url, ['action' => null]);
-$mform = null;
+$mform     = null;
 
-/************
+/*
  * Actions. *
- ************/
+ */
 if ($action === 'create') {
-    $mform = new template_form(null, ['action' => 'create', 'cmid' => $cmid, 'sesskey' => $sesskey ?? sesskey()]);
+    $mform = new template_form(null, ['action' => 'create', 'cmid' => $cmid, 'sesskey' => ($sesskey ?? sesskey())]);
 
     if ($mform->is_cancelled()) {
         redirect($returnurl);
     }
 
     if ($fromform = $mform->get_data()) {
-        $template = (object) ['id' => null, 'name' => $fromform->name];
+        $template     = (object) [
+            'id'   => null,
+            'name' => $fromform->name,
+        ];
         $template->id = $DB->insert_record('otopo_template', $template);
 
         redirect(new moodle_url($url, ['id' => $template->id, 'action' => 'edit']));
     }
 } else if ($action === 'edit' && $template) {
-    $mform = new template_form(null, ['action' => 'edit', 'cmid' => $cmid, 'sesskey' => $sesskey ?? sesskey()]);
+    $mform = new template_form(null, ['action' => 'edit', 'cmid' => $cmid, 'sesskey' => ($sesskey ?? sesskey())]);
 
     if ($mform->is_cancelled()) {
         redirect($returnurl);
@@ -119,7 +128,7 @@ if ($action === 'create') {
         $mform->set_data($template);
     }
 
-    include('vue.php');
+    include 'vue.php';
     $PAGE->requires->js_call_amd('mod_otopo/grids', 'initGrid', [-$template->id, false, $cmid]);
 } else if ($action === 'delete' && $template) {
     delete_items(-$template->id);
@@ -127,9 +136,9 @@ if ($action === 'create') {
     $returnurl->remove_params(['id' => null]);
 } else if ($action === 'export' && $template) {
     $items = get_items_sorted_from_otopo(-$template->id);
-    csv_from_items($items, 'grids_templates_' . $template->id . '.csv');
+    csv_from_items($items, 'grids_templates_'.$template->id.'.csv');
     return;
-}
+}//end if
 
 if (!$mform && $action !== 'show') {
     // The only time the form is not required is when the action is 'show'.
@@ -137,10 +146,10 @@ if (!$mform && $action !== 'show') {
     redirect($returnurl);
 }
 
-/***********
+/*
  * Output. *
- ***********/
-$output = $PAGE->get_renderer('mod_otopo');
+ */
+$output     = $PAGE->get_renderer('mod_otopo');
 $renderable = new mod_otopo\output\templates_page($template, $action, $mform, $cmid);
 
 echo $output->header();

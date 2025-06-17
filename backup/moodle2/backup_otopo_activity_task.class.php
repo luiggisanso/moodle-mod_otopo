@@ -17,53 +17,66 @@
 /**
  * Backup activity task.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/otopo/backup/moodle2/backup_otopo_stepslib.php');
+require_once $CFG->dirroot.'/mod/otopo/backup/moodle2/backup_otopo_stepslib.php';
 
 /**
  * Choice backup task that provides all the settings and steps to perform one
  * complete backup of the activity.
  */
-class backup_otopo_activity_task extends backup_activity_task {
+class backup_otopo_activity_task extends backup_activity_task
+{
+
+
     /**
      * Define (add) particular settings this activity can have
      */
-    protected function define_my_settings() {
+    protected function define_my_settings()
+    {
         // No particular settings for this activity.
-    }
+
+    }//end define_my_settings()
+
 
     /**
      * Define (add) particular steps this activity can have
      */
-    protected function define_my_steps() {
+    protected function define_my_steps()
+    {
         $this->add_step(new backup_otopo_activity_structure_step('otopo_structure', 'otopo.xml'));
-    }
+
+    }//end define_my_steps()
+
 
     /**
      * Code the transformations to perform in the activity in
      * order to get transportable (encoded) links
      */
-    public static function encode_content_links($content) {
+    public static function encode_content_links($content)
+    {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot, "/");
+        $base = preg_quote($CFG->wwwroot, '/');
 
         // Link to the list of otopos.
-        $search = "/(" . $base . "\/mod\/otopo\/index.php\?id\=)([0-9]+)/";
+        $search  = '/('.$base.'\/mod\/otopo\/index.php\?id\=)([0-9]+)/';
         $content = preg_replace($search, '$@OTOPOINDEX*$2@$', $content);
 
         // Link to choice view by moduleid.
-        $search = "/(" . $base . "\/mod\/otopo\/view.php\?id\=)([0-9]+)/";
+        $search  = '/('.$base.'\/mod\/otopo\/view.php\?id\=)([0-9]+)/';
         $content = preg_replace($search, '$@OTOPOVIEWBYID*$2@$', $content);
 
         return $content;
-    }
-}
+
+    }//end encode_content_links()
+
+
+}//end class

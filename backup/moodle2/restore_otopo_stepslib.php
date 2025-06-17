@@ -17,25 +17,28 @@
 /**
  * Define all the restore steps that will be used by the restore_otopo_activity_task.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Structure step to restore one otopo activity.
  */
-class restore_otopo_activity_structure_step extends restore_activity_structure_step {
+class restore_otopo_activity_structure_step extends restore_activity_structure_step
+{
+
+
     /**
      * Define the structure of the restore workflow.
      *
      * @return restore_path_element
      */
-    protected function define_structure() {
-
-        $paths = [];
+    protected function define_structure()
+    {
+        $paths    = [];
         $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('otopo', '/activity/otopo');
@@ -50,22 +53,25 @@ class restore_otopo_activity_structure_step extends restore_activity_structure_s
 
         // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
-    }
+
+    }//end define_structure()
+
 
     /**
      * Process otopo data.
      *
      * @param object|array $data The data.
      */
-    protected function process_otopo($data) {
+    protected function process_otopo($data)
+    {
         global $DB;
 
-        $data = (object)$data;
-        $oldid = $data->id;
+        $data         = (object) $data;
+        $oldid        = $data->id;
         $data->course = $this->get_courseid();
 
         $data->allowsubmissionfromdate = $this->apply_date_offset($data->allowsubmissionfromdate);
-        $data->allowsubmissiontodate = $this->apply_date_offset($data->allowsubmissiontodate);
+        $data->allowsubmissiontodate   = $this->apply_date_offset($data->allowsubmissiontodate);
 
         $data->timecreated = time();
 
@@ -73,124 +79,151 @@ class restore_otopo_activity_structure_step extends restore_activity_structure_s
         $newitemid = $DB->insert_record('otopo', $data);
         // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
-    }
+
+    }//end process_otopo()
+
 
     /**
      * Process session data.
      *
      * @param object|array $data The data.
      */
-    protected function process_session($data) {
+    protected function process_session($data)
+    {
         global $DB;
 
-        $data = (object)$data;
+        $data  = (object) $data;
         $oldid = $data->id;
 
         $data->otopo = $this->get_new_parentid('otopo');
 
         $data->allowsubmissionfromdate = $this->apply_date_offset($data->allowsubmissionfromdate);
-        $data->allowsubmissiontodate = $this->apply_date_offset($data->allowsubmissiontodate);
+        $data->allowsubmissiontodate   = $this->apply_date_offset($data->allowsubmissiontodate);
 
         $newitemid = $DB->insert_record('otopo_session', $data);
         $this->set_mapping('session', $oldid, $newitemid);
-    }
+
+    }//end process_session()
+
 
     /**
      * Process item data.
      *
      * @param object|array $data The data.
      */
-    protected function process_item($data) {
+    protected function process_item($data)
+    {
         global $DB;
 
-        $data = (object)$data;
+        $data  = (object) $data;
         $oldid = $data->id;
 
         $data->otopo = $this->get_new_parentid('otopo');
 
         $newitemid = $DB->insert_record('otopo_item', $data);
         $this->set_mapping('item', $oldid, $newitemid);
-    }
+
+    }//end process_item()
+
 
     /**
      * Process degree data.
      *
      * @param object|array $data The data.
      */
-    protected function process_degree($data) {
+    protected function process_degree($data)
+    {
         global $DB;
 
-        $data = (object)$data;
+        $data  = (object) $data;
         $oldid = $data->id;
 
         $data->item = $this->get_new_parentid('item');
 
         $newitemid = $DB->insert_record('otopo_item_degree', $data);
         $this->set_mapping('degree', $oldid, $newitemid);
-    }
+
+    }//end process_degree()
+
 
     /**
      * Process user data.
      *
      * @param object|array $data The data.
      */
-    protected function process_user_otopo($data) {
+    protected function process_user_otopo($data)
+    {
         global $DB;
 
-        $data = (object)$data;
+        $data = (object) $data;
 
-        $data->item = $this->get_new_parentid('item');
+        $data->item   = $this->get_new_parentid('item');
         $data->degree = $this->get_mappingid('degree', $data->degree);
         if ($data->session > 0) {
             $data->session = $this->get_mappingid('session', $data->session);
         }
+
         $data->userid = $this->get_mappingid('userid', $data->userid);
 
         $DB->insert_record('otopo_user_otopo', $data);
-    }
+
+    }//end process_user_otopo()
+
 
     /**
      * Process user valid session data.
      *
      * @param object|array $data The data.
      */
-    protected function process_user_valid_session($data) {
+    protected function process_user_valid_session($data)
+    {
         global $DB;
 
-        $data = (object)$data;
+        $data = (object) $data;
 
         $data->otopo = $this->get_new_parentid('otopo');
         if ($data->session > 0) {
             $data->session = $this->get_mappingid('session', $data->session);
         }
+
         $data->userid = $this->get_mappingid('userid', $data->userid);
 
         $DB->insert_record('otopo_user_valid_session', $data);
-    }
+
+    }//end process_user_valid_session()
+
 
     /**
      * Process grader data.
      *
      * @param object|array $data The data.
      */
-    protected function process_grader($data) {
+    protected function process_grader($data)
+    {
         global $DB;
 
-        $data = (object)$data;
+        $data = (object) $data;
 
         $data->otopo = $this->get_new_parentid('otopo');
         if ($data->session > 0) {
             $data->session = $this->get_mappingid('session', $data->session);
         }
+
         $data->userid = $this->get_mappingid('userid', $data->userid);
 
         $newitemid = $DB->insert_record('otopo_grader', $data);
-    }
+
+    }//end process_grader()
+
 
     /**
      * Do after execution.
      */
-    protected function after_execute() {
+    protected function after_execute()
+    {
         $this->add_related_files('mod_otopo', 'intro', null);
-    }
-}
+
+    }//end after_execute()
+
+
+}//end class

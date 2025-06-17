@@ -9,6 +9,7 @@ For any questions, suggestions or bug reports, please refer to the [CONTRIBUTE.m
 | Name | Role | Site | Contact |
 | ---- | ---- | ---- | ------- |
 | E-Learning Touch' | Lead Maintainer | [elearningtouch.com](https://www.elearningtouch.com/) | [contact@elearningtouch.com](mailto:contact@elearningtouch.com) |
+| Alan Teurroc | Coder | [elearningtouch.com](https://www.elearningtouch.com/) | [183357669+ateurroc@users.noreply.github.com](mailto:183357669+ateurroc@users.noreply.github.com) |
 | Eric Tanguy | Project Manager | | [eric.tanguy@univ-nantes.fr](mailto:eric.tanguy@univ-nantes.fr) |
 | Christophe Boiteux | Project Management Assistance | | [christophe.boiteux@univ-nantes.fr](mailto:christophe.boiteux@univ-nantes.fr) |
 

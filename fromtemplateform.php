@@ -17,30 +17,34 @@
 /**
  * Form to import a template.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->libdir/formslib.php");
+require_once "$CFG->libdir/formslib.php";
 
 /**
  * Class of the form used to import a template.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class fromtemplate_form extends moodleform {
+class fromtemplate_form extends moodleform
+{
+
+
     /**
      * Add elements to form.
      */
-    public function definition() {
+    public function definition()
+    {
         $mform = $this->_form;
 
         $mform->addElement('hidden', 'id', $this->_customdata['id']);
@@ -55,20 +59,24 @@ class fromtemplate_form extends moodleform {
         $mform->addElement('hidden', 'sesskey', $this->_customdata['sesskey']);
         $mform->setType('sesskey', PARAM_TEXT);
 
-        $templates = $this->_customdata['templates'];
+        $templates       = $this->_customdata['templates'];
         $templatesselect = [];
         foreach ($templates as $template) {
             $templatesselect[$template->id] = $template->name;
         }
+
         $options = [
-            'multiple' => false,
+            'multiple'          => false,
             'noselectionstring' => get_string('templatechoosetemplate', 'otopo'),
-            'required' => true,
+            'required'          => true,
         ];
         $mform->addElement('autocomplete', 'template', get_string('template', 'otopo'), $templatesselect, $options);
         $mform->addRule('template', null, 'required', null, 'server');
         $mform->setDefault('template', null);
 
         $this->add_action_buttons();
-    }
-}
+
+    }//end definition()
+
+
+}//end class

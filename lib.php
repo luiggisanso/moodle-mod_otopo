@@ -17,31 +17,33 @@
 /**
  * Library of interface functions and constants.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-require_once(__DIR__ . '/grade_form.php');
-require_once(__DIR__ . '/locallib.php');
-require_once($CFG->dirroot . '/calendar/lib.php');
-require_once($CFG->libdir . '/formslib.php');
+require_once __DIR__.'/grade_form.php';
+require_once __DIR__.'/locallib.php';
+require_once $CFG->dirroot.'/calendar/lib.php';
+require_once $CFG->libdir.'/formslib.php';
 
 define('OTOPO_EVENT_TYPE_ACTIVITY', 'otopo_activity');
 define('OTOPO_EVENT_TYPE_SESSION', 'otopo_session');
 
+
 /**
  * Return if the plugin supports $feature.
  *
- * @param string $feature Constant representing the feature.
+ * @param  string $feature Constant representing the feature.
  * @return true | null True if the feature is supported, null otherwise.
  */
-function otopo_supports(string $feature) {
+function otopo_supports(string $feature)
+{
     // This for compatibility with 3.X version of moodle.
     if (defined('FEATURE_MOD_PURPOSE') && $feature === FEATURE_MOD_PURPOSE) {
         return MOD_PURPOSE_CONTENT;
@@ -49,17 +51,23 @@ function otopo_supports(string $feature) {
 
     switch ($feature) {
         case FEATURE_GRADE_HAS_GRADE:
-            return true;
+        return true;
+
         case FEATURE_SHOW_DESCRIPTION:
-            return true;
+        return true;
+
         case FEATURE_MOD_INTRO:
-            return true;
+        return true;
+
         case FEATURE_BACKUP_MOODLE2:
-            return true;
+        return true;
+
         default:
-            return null;
+        return null;
     }
-}
+
+}//end otopo_supports()
+
 
 /**
  * Saves a new instance of the mod_otopo into the database.
@@ -68,48 +76,49 @@ function otopo_supports(string $feature) {
  * in mod_form.php) this function will create a new instance and return the id
  * number of the instance.
  *
- * @param object $moduleinstance An object from the form.
- * @param mod_otopo_mod_form $mform The form.
- * @return int The id of the newly inserted record.
+ * @param  object             $moduleinstance An object from the form.
+ * @param  mod_otopo_mod_form $mform          The form.
+ * @return integer The id of the newly inserted record.
  */
-function otopo_add_instance(object $moduleinstance, mod_otopo_mod_form $mform = null) {
+function otopo_add_instance(object $moduleinstance, mod_otopo_mod_form $mform=null)
+{
     global $DB;
 
     $moduleinstance->timecreated = time();
 
     $moduleinstance->id = $DB->insert_record('otopo', $moduleinstance);
 
-    $event = new stdClass();
-    $event->eventtype = OTOPO_EVENT_TYPE_ACTIVITY;
-    $event->type = CALENDAR_EVENT_TYPE_ACTION;
-    $event->name = $moduleinstance->name . ' - ' . get_string('start', 'otopo');
-    $event->format = FORMAT_HTML;
-    $event->courseid = $moduleinstance->course;
-    $event->groupid = 0;
-    $event->userid = 0;
-    $event->modulename = 'otopo';
-    $event->instance = $moduleinstance->id;
-    $event->timestart = $moduleinstance->allowsubmissionfromdate;
+    $event               = new stdClass();
+    $event->eventtype    = OTOPO_EVENT_TYPE_ACTIVITY;
+    $event->type         = CALENDAR_EVENT_TYPE_ACTION;
+    $event->name         = $moduleinstance->name.' - '.get_string('start', 'otopo');
+    $event->format       = FORMAT_HTML;
+    $event->courseid     = $moduleinstance->course;
+    $event->groupid      = 0;
+    $event->userid       = 0;
+    $event->modulename   = 'otopo';
+    $event->instance     = $moduleinstance->id;
+    $event->timestart    = $moduleinstance->allowsubmissionfromdate;
     $event->timeduration = 0;
-    $event->visible = instance_is_visible('otopo', $moduleinstance);
+    $event->visible      = instance_is_visible('otopo', $moduleinstance);
 
     $event = calendar_event::create($event, false);
 
     $moduleinstance->event_start = $event->id;
 
-    $event = new stdClass();
-    $event->eventtype = OTOPO_EVENT_TYPE_ACTIVITY;
-    $event->type = CALENDAR_EVENT_TYPE_ACTION;
-    $event->name = $moduleinstance->name . ' - ' . get_string('end', 'otopo');
-    $event->format = FORMAT_HTML;
-    $event->courseid = $moduleinstance->course;
-    $event->groupid = 0;
-    $event->userid = 0;
-    $event->modulename = 'otopo';
-    $event->instance = $moduleinstance->id;
-    $event->timestart = $moduleinstance->allowsubmissiontodate;
+    $event               = new stdClass();
+    $event->eventtype    = OTOPO_EVENT_TYPE_ACTIVITY;
+    $event->type         = CALENDAR_EVENT_TYPE_ACTION;
+    $event->name         = $moduleinstance->name.' - '.get_string('end', 'otopo');
+    $event->format       = FORMAT_HTML;
+    $event->courseid     = $moduleinstance->course;
+    $event->groupid      = 0;
+    $event->userid       = 0;
+    $event->modulename   = 'otopo';
+    $event->instance     = $moduleinstance->id;
+    $event->timestart    = $moduleinstance->allowsubmissiontodate;
     $event->timeduration = 0;
-    $event->visible = instance_is_visible('otopo', $moduleinstance);
+    $event->visible      = instance_is_visible('otopo', $moduleinstance);
 
     $event = calendar_event::create($event, false);
 
@@ -118,7 +127,9 @@ function otopo_add_instance(object $moduleinstance, mod_otopo_mod_form $mform = 
     $DB->update_record('otopo', $moduleinstance);
 
     return $moduleinstance->id;
-}
+
+}//end otopo_add_instance()
+
 
 /**
  * Updates an instance of the mod_otopo in the database.
@@ -126,15 +137,16 @@ function otopo_add_instance(object $moduleinstance, mod_otopo_mod_form $mform = 
  * Given an object containing all the necessary data (defined in mod_form.php),
  * this function will update an existing instance with new data.
  *
- * @param object $moduleinstance An object from the form in mod_form.php.
- * @param mod_otopo_mod_form $mform The form.
- * @return bool True if successful, false otherwise.
+ * @param  object             $moduleinstance An object from the form in mod_form.php.
+ * @param  mod_otopo_mod_form $mform          The form.
+ * @return boolean True if successful, false otherwise.
  */
-function otopo_update_instance(object $moduleinstance, mod_otopo_mod_form $mform = null) {
+function otopo_update_instance(object $moduleinstance, mod_otopo_mod_form $mform=null)
+{
     global $DB;
 
     $moduleinstance->timemodified = time();
-    $moduleinstance->id = $moduleinstance->instance;
+    $moduleinstance->id           = $moduleinstance->instance;
 
     $sessions = $DB->get_records('otopo_session', [ 'otopo' => $moduleinstance->id ], 'allowsubmissionfromdate', '*');
     if (count($sessions) > 0) {
@@ -145,8 +157,8 @@ function otopo_update_instance(object $moduleinstance, mod_otopo_mod_form $mform
     if ($DB->update_record('otopo', $moduleinstance)) {
         $moduleinstance = $DB->get_record('otopo', [ 'id' => $moduleinstance->id ]);
 
-        $course = $DB->get_record('course', [ 'id' => $moduleinstance->course ], '*', MUST_EXIST);
-        $cm = get_coursemodule_from_instance('otopo', $moduleinstance->id, $course->id, false, MUST_EXIST);
+        $course        = $DB->get_record('course', [ 'id' => $moduleinstance->course ], '*', MUST_EXIST);
+        $cm            = get_coursemodule_from_instance('otopo', $moduleinstance->id, $course->id, false, MUST_EXIST);
         $modulecontext = context_module::instance($cm->id);
 
         $event = \mod_otopo\event\activity_updated::create([ 'context' => $modulecontext ]);
@@ -157,9 +169,9 @@ function otopo_update_instance(object $moduleinstance, mod_otopo_mod_form $mform
         if ($moduleinstance->event_start) {
             $event = calendar_event::load($moduleinstance->event_start);
             if ($event) {
-                $event->name = $moduleinstance->name . ' - ' . get_string('start', 'otopo');
+                $event->name      = $moduleinstance->name.' - '.get_string('start', 'otopo');
                 $event->timestart = $moduleinstance->allowsubmissionfromdate;
-                $event->visible = instance_is_visible('otopo', $moduleinstance);
+                $event->visible   = instance_is_visible('otopo', $moduleinstance);
                 $event->update($event, false);
             }
         } else if ($oldinstance->event_start) {
@@ -168,12 +180,13 @@ function otopo_update_instance(object $moduleinstance, mod_otopo_mod_form $mform
                 $event->delete();
             }
         }
+
         if ($moduleinstance->event_end) {
             $event = calendar_event::load($moduleinstance->event_end);
             if ($event) {
-                $event->name = $moduleinstance->name . ' - ' . get_string('end', 'otopo');
+                $event->name      = $moduleinstance->name.' - '.get_string('end', 'otopo');
                 $event->timestart = $moduleinstance->allowsubmissiontodate;
-                $event->visible = instance_is_visible('otopo', $moduleinstance);
+                $event->visible   = instance_is_visible('otopo', $moduleinstance);
                 $event->update($event, false);
             }
         } else if ($oldinstance->event_end) {
@@ -184,18 +197,21 @@ function otopo_update_instance(object $moduleinstance, mod_otopo_mod_form $mform
         }
 
         return true;
-    }
+    }//end if
 
     return false;
-}
+
+}//end otopo_update_instance()
+
 
 /**
  * Removes an instance of the mod_otopo from the database.
  *
- * @param int $id Id of the module instance.
- * @return bool True if successful, false on failure.
+ * @param  integer $id Id of the module instance.
+ * @return boolean True if successful, false on failure.
  */
-function otopo_delete_instance(int $id) {
+function otopo_delete_instance(int $id)
+{
     global $DB;
 
     $exists = $DB->get_record('otopo', [ 'id' => $id ]);
@@ -211,6 +227,7 @@ function otopo_delete_instance(int $id) {
                 $event->delete();
             }
         }
+
         if ($session->event_end) {
             $event = calendar_event::load($session->event_end);
             if ($event) {
@@ -218,13 +235,18 @@ function otopo_delete_instance(int $id) {
             }
         }
     }
+
     $DB->delete_records('otopo_session', [ 'otopo' => $id ]);
     $items = $DB->get_records('otopo_item', [ 'otopo' => $id ]);
     if (!empty($items)) {
-        [$insql, $params] = $DB->get_in_or_equal(array_keys($items));
+        [
+            $insql,
+            $params,
+        ] = $DB->get_in_or_equal(array_keys($items));
         $DB->delete_records_select('otopo_item_degree', "item $insql", $params);
         $DB->delete_records_select('otopo_user_otopo', "item $insql", $params);
     }
+
     $DB->delete_records('otopo_item', [ 'otopo' => $id ]);
     $DB->delete_records('otopo_user_valid_session', [ 'otopo' => $id ]);
     $DB->delete_records('otopo_grader', [ 'otopo' => $id ]);
@@ -237,6 +259,7 @@ function otopo_delete_instance(int $id) {
             $event->delete();
         }
     }
+
     if ($moduleinstance->event_end) {
         $event = calendar_event::load($moduleinstance->event_end);
         if ($event) {
@@ -247,7 +270,9 @@ function otopo_delete_instance(int $id) {
     $DB->delete_records('otopo', [ 'id' => $id ]);
 
     return true;
-}
+
+}//end otopo_delete_instance()
+
 
 /**
  * Is a given scale used by the instance of mod_otopo?
@@ -255,43 +280,50 @@ function otopo_delete_instance(int $id) {
  * This function returns if a scale is being used by one mod_otopo
  * if it has support for grading and scales.
  *
- * @param int $moduleinstanceid ID of an instance of this module.
- * @param int $scaleid ID of the scale.
- * @return bool True if the scale is used by the given mod_otopo instance.
+ * @param  integer $moduleinstanceid ID of an instance of this module.
+ * @param  integer $scaleid          ID of the scale.
+ * @return boolean True if the scale is used by the given mod_otopo instance.
  */
-function otopo_scale_used(int $moduleinstanceid, int $scaleid) {
+function otopo_scale_used(int $moduleinstanceid, int $scaleid)
+{
     global $DB;
     return $scaleid && $DB->record_exists('otopo', [ 'id' => $moduleinstanceid, 'grade' => -$scaleid ]);
-}
+
+}//end otopo_scale_used()
+
 
 /**
  * Checks if scale is being used by any instance of mod_otopo.
  *
  * This is used to find out if scale used anywhere.
  *
- * @param int $scaleid ID of the scale.
- * @return bool True if the scale is used by any mod_otopo instance.
+ * @param  integer $scaleid ID of the scale.
+ * @return boolean True if the scale is used by any mod_otopo instance.
  */
-function otopo_scale_used_anywhere(int $scaleid) {
+function otopo_scale_used_anywhere(int $scaleid)
+{
     global $DB;
     return $scaleid && $DB->record_exists('otopo', [ 'grade' => -$scaleid ]);
-}
+
+}//end otopo_scale_used_anywhere()
+
 
 /**
  * Creates or updates grade item for the given mod_otopo instance.
  *
  * Needed by {@see grade_update_mod_grades()}.
  *
- * @param object $moduleinstance Instance object with extra cmidnumber and modname property.
- * @param array|string $grades Grades in the gradebook.
+ * @param  object       $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param  array|string $grades         Grades in the gradebook.
  * @return void.
  */
-function otopo_grade_item_update(object $moduleinstance, $grades = []) {
+function otopo_grade_item_update(object $moduleinstance, $grades=[])
+{
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    include_once $CFG->libdir.'/gradelib.php';
 
-    $item = [];
-    $item['itemname'] = clean_param($moduleinstance->name, PARAM_NOTAGS);
+    $item              = [];
+    $item['itemname']  = clean_param($moduleinstance->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
 
     if ($moduleinstance->grade > 0) {
@@ -304,23 +336,27 @@ function otopo_grade_item_update(object $moduleinstance, $grades = []) {
     } else {
         $item['gradetype'] = GRADE_TYPE_NONE;
     }
+
     if ($grades === 'reset') {
         $item['reset'] = true;
-        $grades = null;
+        $grades        = null;
     }
 
     grade_update('/mod/otopo', $moduleinstance->course, 'mod', 'otopo', $moduleinstance->id, 0, $grades, $item);
-}
+
+}//end otopo_grade_item_update()
+
 
 /**
  * Delete grade item for given mod_otopo instance.
  *
- * @param object $moduleinstance Instance object.
+ * @param  object $moduleinstance Instance object.
  * @return grade_item.
  */
-function otopo_grade_item_delete(object $moduleinstance) {
+function otopo_grade_item_delete(object $moduleinstance)
+{
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    include_once $CFG->libdir.'/gradelib.php';
     return grade_update(
         '/mod/otopo',
         $moduleinstance->course,
@@ -331,19 +367,22 @@ function otopo_grade_item_delete(object $moduleinstance) {
         null,
         [ 'deleted' => 1 ]
     );
-}
+
+}//end otopo_grade_item_delete()
+
 
 /**
  * Update mod_otopo grades in the gradebook.
  *
  * Needed by {@see grade_update_mod_grades()}.
  *
- * @param object $moduleinstance Instance object with extra cmidnumber and modname property.
- * @param int $userid Update grade of specific user only, 0 means all participants.
+ * @param object  $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param integer $userid         Update grade of specific user only, 0 means all participants.
  */
-function otopo_update_grades(object $moduleinstance, int $userid = 0) {
+function otopo_update_grades(object $moduleinstance, int $userid=0)
+{
     global $CFG, $DB;
-    require_once($CFG->libdir . '/gradelib.php');
+    include_once $CFG->libdir.'/gradelib.php';
 
     if ($moduleinstance->gradeonlyforteacher) {
         otopo_grade_item_update($moduleinstance, 'reset');
@@ -352,17 +391,17 @@ function otopo_update_grades(object $moduleinstance, int $userid = 0) {
 
     $grades = [];
 
-    $course = $DB->get_record('course', [ 'id' => $moduleinstance->course ], '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('otopo', $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $course        = $DB->get_record('course', [ 'id' => $moduleinstance->course ], '*', MUST_EXIST);
+    $cm            = get_coursemodule_from_instance('otopo', $moduleinstance->id, $course->id, false, MUST_EXIST);
     $modulecontext = context_module::instance($cm->id);
 
-    $items = get_items_sorted_from_otopo($moduleinstance->id);
+    $items        = get_items_sorted_from_otopo($moduleinstance->id);
     $participants = get_participants($moduleinstance, $modulecontext);
 
     // Populate array of grade objects indexed by userid.
     if ($userid == 0) {
         foreach ($participants as $participant) {
-            $otopos = get_user_otopos($moduleinstance, $participant);
+            $otopos   = get_user_otopos($moduleinstance, $participant);
             $sessions = prepare_data($moduleinstance, $items, $otopos, $participant);
             foreach (array_reverse($sessions) as $session) {
                 if ($session->isvalid) {
@@ -373,25 +412,29 @@ function otopo_update_grades(object $moduleinstance, int $userid = 0) {
         }
     } else {
         $participant = (object) [ 'id' => $userid ];
-        $otopos = get_user_otopos($moduleinstance, $participant);
-        $sessions = prepare_data($moduleinstance, $items, $otopos, $participant);
+        $otopos      = get_user_otopos($moduleinstance, $participant);
+        $sessions    = prepare_data($moduleinstance, $items, $otopos, $participant);
         foreach (array_reverse($sessions) as $session) {
             if ($session->isvalid) {
                 $grades[$participant->id] = convert_grade_to_gradebook($participant->id, $session->grade, $session->comment);
                 break;
             }
         }
-    }
+    }//end if
+
     otopo_grade_item_update($moduleinstance, $grades);
-}
+
+}//end otopo_update_grades()
+
 
 /**
  * Serve the grading panel as a fragment.
  *
- * @param array $args List of named arguments for the fragment loader.
+ * @param  array $args List of named arguments for the fragment loader.
  * @return string
  */
-function mod_otopo_output_fragment_gradingpanel(array $args) {
+function mod_otopo_output_fragment_gradingpanel(array $args)
+{
     global $CFG, $DB, $OUTPUT;
 
     $context = $args['context'];
@@ -400,69 +443,80 @@ function mod_otopo_output_fragment_gradingpanel(array $args) {
         return null;
     }
 
-    $cm = get_coursemodule_from_id('otopo', $context->instanceid, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', [ 'id' => $cm->course ], '*', MUST_EXIST);
+    $cm             = get_coursemodule_from_id('otopo', $context->instanceid, 0, false, MUST_EXIST);
+    $course         = $DB->get_record('course', [ 'id' => $cm->course ], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('otopo', [ 'id' => $cm->instance ], '*', MUST_EXIST);
 
     require_capability('mod/otopo:grade', $context);
 
     $sessionid = $args['session'];
-    $userid = $args['userid'];
+    $userid    = $args['userid'];
 
     $otoposforms = [];
 
     $user = (object) [ 'id' => $userid ];
 
-    $grader = $DB->get_record('otopo_grader', [ 'userid' => $userid, 'session' => $sessionid, 'otopo' => $moduleinstance->id ]);
-    $otopos = get_user_otopos($moduleinstance, $user);
-    $items = get_items_from_otopo($moduleinstance->id);
+    $grader      = $DB->get_record('otopo_grader', [ 'userid' => $userid, 'session' => $sessionid, 'otopo' => $moduleinstance->id ]);
+    $otopos      = get_user_otopos($moduleinstance, $user);
+    $items       = get_items_from_otopo($moduleinstance->id);
     $itemssorted = get_items_sorted_from_otopo($moduleinstance->id);
-    $sessions = prepare_data($moduleinstance, $itemssorted, $otopos, $user);
+    $sessions    = prepare_data($moduleinstance, $itemssorted, $otopos, $user);
     if ($moduleinstance->session) {
         $session = $sessions[$sessionid];
     } else {
-        $session = $sessions[abs($sessionid) - 1];
+        $session = $sessions[(abs($sessionid) - 1)];
     }
+
     foreach ($otopos as $itemid => $otopossession) {
         if (array_key_exists($sessionid, $otopossession)) {
             $otoposforms[$items[$itemid]->ord] = [
-                'title' => $items[$itemid]->name,
-                'id' => $itemid,
+                'title'   => $items[$itemid]->name,
+                'id'      => $itemid,
                 'comment' => $otopossession[$sessionid]->teacher_comment,
             ];
         }
     }
+
     $otoposforms = array_values($otoposforms);
 
     $globalform = [
-        'title' => get_string('autoeval', 'otopo') . ' ' . $session->key,
-        'form' => (new grade_form(null, [
-            'otopo' => $moduleinstance,
-            'grader' => $grader,
-            'default_grade' => $session->grade,
-            'disabled' => !$session->isvalidorclosed,
-        ]))->render(),
-        'validated' => $session->isvalidorclosed,
+        'title'        => get_string('autoeval', 'otopo').' '.$session->key,
+        'form'         => (new grade_form(
+            null,
+            [
+                'otopo'         => $moduleinstance,
+                'grader'        => $grader,
+                'default_grade' => $session->grade,
+                'disabled'      => !$session->isvalidorclosed,
+            ]
+        ))->render(),
+        'validated'    => $session->isvalidorclosed,
         'notevaluated' => !$grader->grade,
     ];
 
-    return $OUTPUT->render_from_template('mod_otopo/grade_form', [
-        'globalform' => $globalform,
-        'otoposforms' => $otoposforms,
-        'disabled' => !$session->isvalidorclosed,
-    ]);
-}
+    return $OUTPUT->render_from_template(
+        'mod_otopo/grade_form',
+        [
+            'globalform'  => $globalform,
+            'otoposforms' => $otoposforms,
+            'disabled'    => !$session->isvalidorclosed,
+        ]
+    );
+
+}//end mod_otopo_output_fragment_gradingpanel()
+
 
 /**
  * Retrieve the course completion state.
  *
- * @param object $course Course.
- * @param object $cm Course module.
- * @param int $userid The user ID.
- * @param bool $type Type of comparison (or/and; can be used as return value if no conditions).
- * @return bool True if completed, false if not, $type if conditions not set.
+ * @param  object  $course Course.
+ * @param  object  $cm     Course module.
+ * @param  integer $userid The user ID.
+ * @param  boolean $type   Type of comparison (or/and; can be used as return value if no conditions).
+ * @return boolean True if completed, false if not, $type if conditions not set.
  */
-function otopo_get_completion_state(object $course, object $cm, int $userid, bool $type) {
+function otopo_get_completion_state(object $course, object $cm, int $userid, bool $type)
+{
     global $CFG, $DB;
 
     $otopo = $DB->get_record('otopo', [ 'id' => $cm->instance ], '*', MUST_EXIST);
@@ -480,12 +534,15 @@ function otopo_get_completion_state(object $course, object $cm, int $userid, boo
                     }
                 }
             }
+
             return false;
         }
     } else {
         return $type;
     }
-}
+
+}//end otopo_get_completion_state()
+
 
 /**
  * Is the event visible?
@@ -494,35 +551,42 @@ function otopo_get_completion_state(object $course, object $cm, int $userid, boo
  * the ASSIGN_EVENT_TYPE_GRADINGDUE event will not be shown to students on their calendar, and
  * ASSIGN_EVENT_TYPE_DUE events will not be shown to teachers.
  *
- * @param calendar_event $event Calendar event.
- * @return bool Returns true if the event is visible to the current user, false otherwise.
+ * @param  calendar_event $event Calendar event.
+ * @return boolean Returns true if the event is visible to the current user, false otherwise.
  */
-function mod_otopo_core_calendar_is_event_visible(calendar_event $event) {
+function mod_otopo_core_calendar_is_event_visible(calendar_event $event)
+{
     global $DB;
 
     $moduleinstance = $DB->get_record('otopo', [ 'id' => $event->instance ], '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('otopo', $event->instance, $event->courseid, false, MUST_EXIST);
-    $modulecontext = context_module::instance($cm->id);
+    $cm             = get_coursemodule_from_instance('otopo', $event->instance, $event->courseid, false, MUST_EXIST);
+    $modulecontext  = context_module::instance($cm->id);
 
     if ($event->eventtype == OTOPO_EVENT_TYPE_ACTIVITY && $moduleinstance->session) {
         return false;
     }
+
     if ($event->eventtype == OTOPO_EVENT_TYPE_SESSION) {
         if (!$moduleinstance->session) {
             return false;
         }
+
         return has_capability('mod/otopo:fill', $modulecontext);
     }
+
     return true;
-}
+
+}//end mod_otopo_core_calendar_is_event_visible()
+
 
 /**
  * Provide calendar event action.
  *
- * @param calendar_event $event Calendar event.
+ * @param calendar_event                $event   Calendar event.
  * @param \core_calendar\action_factory $factory Calendar factory.
  */
-function mod_otopo_core_calendar_provide_event_action(calendar_event $event, \core_calendar\action_factory $factory) {
+function mod_otopo_core_calendar_provide_event_action(calendar_event $event, \core_calendar\action_factory $factory)
+{
     global $USER;
 
     $cm = get_coursemodule_from_instance('otopo', $event->instance, $event->courseid, false, MUST_EXIST);
@@ -530,12 +594,15 @@ function mod_otopo_core_calendar_provide_event_action(calendar_event $event, \co
     if ($event->eventtype == OTOPO_EVENT_TYPE_SESSION) {
         return $factory->create_instance(
             get_string('fill', 'otopo'),
-            new \moodle_url('/mod/otopo/view.php', [
-                'id' => $cm->id,
-                'action' => 'evaluate',
-                'session' => $event->repeatid,
-                'sesskey' => sesskey(),
-            ]),
+            new \moodle_url(
+                '/mod/otopo/view.php',
+                [
+                    'id'      => $cm->id,
+                    'action'  => 'evaluate',
+                    'session' => $event->repeatid,
+                    'sesskey' => sesskey(),
+                ]
+            ),
             1,
             !session_is_valid_or_closed($event->instance, $USER, $event->repeatid)
         );
@@ -546,36 +613,43 @@ function mod_otopo_core_calendar_provide_event_action(calendar_event $event, \co
             1,
             true
         );
-    }
-}
+    }//end if
+
+}//end mod_otopo_core_calendar_provide_event_action()
+
 
 /**
  * Add elements to the course form.
  *
  * @param MoodleQuickForm $mform The form.
  */
-function otopo_reset_course_form_definition(MoodleQuickForm &$mform) {
+function otopo_reset_course_form_definition(MoodleQuickForm &$mform)
+{
     $mform->addElement('header', 'otopoheader', get_string('modulenameplural', 'otopo'));
     $mform->addElement('advcheckbox', 'reset_otopo_user_otopo', get_string('deleteotopos', 'otopo'));
     $mform->addElement('advcheckbox', 'reset_otopo_grader', get_string('deletegrader', 'otopo'));
-}
+
+}//end otopo_reset_course_form_definition()
+
 
 /**
  * Implements callback to reset course.
  *
- * @param object $data User data.
+ * @param  object $data User data.
  * @return boolean|array
  */
-function otopo_reset_userdata(object $data) {
+function otopo_reset_userdata(object $data)
+{
     global $CFG, $DB;
 
     $componentstr = get_string('modulenameplural', 'otopo');
-    $status = [];
+    $status       = [];
 
     // Get the wiki(s) in this course.
     if (!$otopos = $DB->get_records('otopo', [ 'course' => $data->courseid ])) {
         return false;
     }
+
     if (empty($data->reset_otopo_user_otopo) && empty($data->reset_otopo_grader)) {
         return $status;
     }
@@ -588,18 +662,31 @@ function otopo_reset_userdata(object $data) {
         if (!empty($data->reset_otopo_user_otopo)) {
             $items = $DB->get_records('otopo_item', [ 'otopo' => $otopo->id ]);
             if (!empty($items)) {
-                [$insql, $params] = $DB->get_in_or_equal(array_keys($items));
+                [
+                    $insql,
+                    $params,
+                ] = $DB->get_in_or_equal(array_keys($items));
                 $DB->delete_records_select('otopo_user_otopo', "item $insql", $params);
             }
+
             $DB->delete_records('otopo_user_valid_session', [ 'otopo' => $otopo->id ]);
-            $status[] = [ 'component' => $componentstr, 'item' => get_string('deleteotopos', 'otopo'), 'error' => false ];
+            $status[] = [
+                'component' => $componentstr,
+                'item'      => get_string('deleteotopos', 'otopo'),
+                'error'     => false,
+            ];
         }
 
         if (!empty($data->reset_otopo_grader)) {
             $DB->delete_records('otopo_grader', [ 'otopo' => $otopo->id ]);
-            $status[] = [ 'component' => $componentstr, 'item' => get_string('deletegrader', 'otopo'), 'error' => false ];
+            $status[] = [
+                'component' => $componentstr,
+                'item'      => get_string('deletegrader', 'otopo'),
+                'error'     => false,
+            ];
         }
-    }
+    }//end foreach
 
     return $status;
-}
+
+}//end otopo_reset_userdata()

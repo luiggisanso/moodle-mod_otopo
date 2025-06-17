@@ -17,11 +17,11 @@
 /**
  * Defines renderers classes.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use mod_otopo\output\grading_app;
@@ -32,13 +32,16 @@ use mod_otopo\output\view_page;
 /**
  * Class defining the main renderer.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_otopo_renderer extends plugin_renderer_base {
+class mod_otopo_renderer extends plugin_renderer_base
+{
+
+
     /**
      * Defer to template.
      *
@@ -46,10 +49,13 @@ class mod_otopo_renderer extends plugin_renderer_base {
      *
      * @return string html for the page
      */
-    public function render_view_page($page) {
+    public function render_view_page($page)
+    {
         $data = $page->export_for_template($this);
         return parent::render_from_template('mod_otopo/view_page', $data);
-    }
+
+    }//end render_view_page()
+
 
     /**
      * Defer to template.
@@ -58,10 +64,13 @@ class mod_otopo_renderer extends plugin_renderer_base {
      *
      * @return string html for the page
      */
-    public function render_templates_page($page) {
+    public function render_templates_page($page)
+    {
         $data = $page->export_for_template($this);
         return parent::render_from_template('mod_otopo/templates_page', $data);
-    }
+
+    }//end render_templates_page()
+
 
     /**
      * Defer to template.
@@ -70,18 +79,25 @@ class mod_otopo_renderer extends plugin_renderer_base {
      *
      * @return string html for the page
      */
-    public function render_view_fill_page($page) {
+    public function render_view_fill_page($page)
+    {
         $data = $page->export_for_template($this);
         return parent::render_from_template('mod_otopo/view_fill_page', $data);
-    }
+
+    }//end render_view_fill_page()
+
 
     /**
      * Defer to template..
      *
      * @param grading_app $app - All the data to render the grading app.
      */
-    public function render_grading_app(grading_app $app) {
+    public function render_grading_app(grading_app $app)
+    {
         $context = $app->export_for_template($this);
         return $this->render_from_template('mod_otopo/grading_app', $context);
-    }
-}
+
+    }//end render_grading_app()
+
+
+}//end class

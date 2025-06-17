@@ -17,28 +17,25 @@
 /**
  * Used to import VueJS.
  *
- * @package     mod_otopo
- * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_otopo
+ * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
-$config = [
-    "paths" => [
-        "lodash" => "https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash",
-        "vue" => "https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue"
-            . (property_exists($CFG, 'vuejsdev') && $CFG->vuejsdev ? '' : '.min'),
-        "vuecolor" => "https://unpkg.com/vue-color@2.8.2/dist/vue-color.min",
+$config    = [
+    'paths' => [
+        'lodash'   => 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash',
+        'vue'      => 'https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue'.(property_exists($CFG, 'vuejsdev') && $CFG->vuejsdev ? '' : '.min'),
+        'vuecolor' => 'https://unpkg.com/vue-color@2.8.2/dist/vue-color.min',
     ],
-    "shim" => [
-        "vue" => [
-            "exports" => "Vue",
-        ],
+    'shim'  => [
+        'vue' => ['exports' => 'Vue'],
     ],
 ];
-$requirejs = 'require.config(' . json_encode($config) . ')';
+$requirejs = 'require.config('.json_encode($config).')';
 $PAGE->requires->js_amd_inline($requirejs);
