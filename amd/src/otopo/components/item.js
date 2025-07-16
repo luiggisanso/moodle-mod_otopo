@@ -37,23 +37,51 @@ define([
         },
 
         // Vue lifecycle hook: called after insertion into the DOM.
+        // Dans la section mounted() de item.js, modifiez la partie où vous récupérez les données :
+
         mounted() {
-            console.log("Mounted for item ID =", this.item.id, "justification=", this.justification);
-            if (!this.justification) {
-                console.log("Justification is empty => let's fetch session-1");
+            console.log("Mounted for item ID =", this.item.id, "justification=", this.justification, "degree=", this.degree);
+            
+            // Vérifier si on doit récupérer les données de la session précédente
+            const shouldFetchPrevious = (!this.justification || this.justification.trim() === '') || 
+                                    (this.degree === null || this.degree === undefined);
+            
+            if (shouldFetchPrevious) {
+                console.log("Missing data (justification or degree) => let's fetch session-1");
                 const currentSession = this.$root.$data.session;
-                // Simple assumption: the previous session = currentSession - 1.
                 const prevSession = currentSession - 1;
+                
                 if (prevSession > 0) {
                     ajax.getUserOtopo(this.$root.$data.otopo, prevSession)
                         .then(prevData => {
                             console.log("prevData for session", prevSession, "=", prevData);
-                            // prevData is an array of objects.
                             let found = prevData.find(obj => obj.item === this.item.id);
-                            if (found && found.justification) {
-                                console.log("Found matching justification: ", found.justification);
-                                // Inject directly into the model to hard-fill the textarea
-                                this.justification = found.justification;
+                            
+                            if (found) {
+                                let needToSave = false; // Flag pour savoir si on doit sauvegarder
+                                
+                                // Reprise de la justification si elle est vide
+                                if ((!this.justification || this.justification.trim() === '') && found.justification && found.justification.trim() !== '') {
+                                    console.log("Found matching justification: ", found.justification);
+                                    this.justification = found.justification;
+                                    needToSave = true;
+                                }
+                                
+                                // Reprise du degree s'il est null/undefined
+                                if ((this.degree === null || this.degree === undefined) && 
+                                    found.degree !== null && found.degree !== undefined) {
+                                    console.log("Found matching degree: ", found.degree);
+                                    this.degree = found.degree;
+                                    needToSave = true;
+                                }
+                                
+                                // Sauvegarder automatiquement si des valeurs ont été récupérées
+                                if (needToSave) {
+                                    this.$nextTick(() => {
+                                        console.log("Auto-saving recovered values: degree=", this.degree, "justification=", this.justification);
+                                        this.setUserOtopo();
+                                    });
+                                }
                             } else {
                                 console.log("No matching item found in prevData for item id: " + this.item.id);
                             }
