@@ -14,6 +14,7 @@ Additionally, make sure to acknowledge all contributors by adding their names to
 
 ## Table of Contents
 
+- [1.1.1](#1.1.1)
 - [1.1.0](#1.1.0)
 - [1.0.14](#1.0.14)
 - [1.0.13](#1.0.13)
@@ -21,6 +22,19 @@ Additionally, make sure to acknowledge all contributors by adding their names to
 - [1.0.11](#1.0.11)
 - [1.0.10](#1.0.10)
 - [1.0.9](#1.0.9)
+
+## 1.1.1
+
+### Fixed
+
+- Automatically retrieved *degrees* and *justifications* from the previous session were correctly displayed but **not saved in the database** (values remained `null`).
+- Root cause: missing call to `setUserOtopo()` after automatic retrieval.
+
+### Changed
+
+- Automatically added a call to `setUserOtopo()` in the `mounted()` hook right after retrieving data from the previous session.
+- This ensures that retrieved values are **immediately saved** without requiring any manual action from the user.
+
 
 ## 1.1.0
 
