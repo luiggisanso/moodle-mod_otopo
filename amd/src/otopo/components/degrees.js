@@ -49,12 +49,26 @@ define(['mod_otopo/otopo/components/degree-modal'], function(DegreeModalHelp) {
             return {
                 images: this.$root.$data.images,
                 strings: this.$root.$data.strings,
-                selected: this.degree ? parseInt(Object.keys(this.degrees)
-                    .find(key => this.degrees[key].id === this.degree)) : null,
+                selected: this.computeSelectedFromDegree(this.degree),
                 showModal: false
             };
         },
+        watch: {
+            // Surveiller les changements de la prop degree
+            degree: function(newDegree) {
+                console.log("degrees.js: degree prop changed to", newDegree);
+                this.selected = this.computeSelectedFromDegree(newDegree);
+            }
+        },
         methods: {
+            computeSelectedFromDegree: function(degree) {
+                if (degree === null || degree === undefined) {
+                    return null;
+                }
+                // Trouver l'index du degré dans le tableau degrees
+                const index = Object.keys(this.degrees).find(key => this.degrees[key].id === degree);
+                return index !== undefined ? parseInt(index) : null;
+            },
             selectNext() {
                 if (this.disabled) {
                     return;
