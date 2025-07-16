@@ -17,22 +17,18 @@
 /**
  * Version information.
  *
- * @package   mod_otopo
- * @copyright 2025 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
- * @copyright 2025 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
- * @copyright 2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
- * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_otopo
+ * @copyright   2024 Nantes Université <support-tice@univ-nantes.fr> (Commissioner)
+ * @copyright   2024 E-learning Touch' <contact@elearningtouch.com> (Maintainer)
+ * @copyright   2022 Kosmos <moodle@kosmos.fr> (Former maintainer)
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2025061700;
-$plugin->requires = 2020061500;
-// Requires 3.9.
-$plugin->release   = 'v1.1.0';
+$plugin->version = 2025062700;
+$plugin->requires = 2020061500; // Requires 3.9.
+$plugin->release = '1.1.1';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->component = 'mod_otopo';
-$plugin->supported = [
-    39,
-    405,
-];
+$plugin->supported = [39, 405];
