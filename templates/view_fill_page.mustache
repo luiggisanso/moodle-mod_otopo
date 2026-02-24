@@ -159,10 +159,12 @@
                                     <div class="lock-icon">
                                         <i class="otopo fa {{#isvalidorclosed}}fa-lock{{/isvalidorclosed}}{{^isvalidorclosed}}fa-unlock{{/isvalidorclosed}}"></i>
                                     </div>
+                                    {{#helpbubbletext}}
                                     <div class="ml-2 mr-2"></div>
                                     <div class="help-icon">
                                         <i class="otopo fa-solid fa-circle-info" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ helpbubbletext }}"></i>
                                     </div>
+                                    {{/helpbubbletext}}
                                 </div>
                             </div>
                         {{/sessions}}

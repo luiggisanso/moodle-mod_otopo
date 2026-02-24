@@ -482,7 +482,7 @@ function mod_otopo_output_fragment_gradingpanel(array $args)
     $globalform = [
         'title'        => get_string('autoeval', 'otopo').' '.$session->key,
         'form'         => (new grade_form(
-            null,
+            new moodle_url('/mod/otopo/view.php', ['id' => $cm->id]),
             [
                 'otopo'         => $moduleinstance,
                 'grader'        => $grader,
