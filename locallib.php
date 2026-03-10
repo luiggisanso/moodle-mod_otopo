@@ -182,8 +182,9 @@ function table_items(array &$items)
                 $item->onedegreehashelptext = true;
             }
 
-            $degree->description = nl2br($degree->description);
-            $degree->helptext    = nl2br($degree->helptext);
+            // Correction pour PHP 8.1+ / Moodle 5.x
+            $degree->description = nl2br($degree->description ?? '');
+            $degree->helptext    = nl2br($degree->helptext ?? '');
         }
     }
 
@@ -1314,7 +1315,8 @@ function parse_csv(string $csvstring, string $delimiter=',', bool $skipemptyline
     $enc   = preg_replace_callback(
         '/"(.*?)"/s',
         function ($field) {
-            return urlencode(utf8_encode($field[1]));
+            // Correction PHP 8.2+ : Suppression de utf8_encode, l'UTF-8 natif suffit.
+            return urlencode($field[1]);
         },
         $enc
     );
@@ -1324,7 +1326,8 @@ function parse_csv(string $csvstring, string $delimiter=',', bool $skipemptyline
             $fields = $trimfields ? array_map('trim', explode($delimiter, $line)) : explode($delimiter, $line);
             return array_map(
                 function ($field) {
-                    return str_replace('!!Q!!', '"', utf8_decode(urldecode($field)));
+                    // Correction PHP 8.2+ : Suppression de utf8_decode.
+                    return str_replace('!!Q!!', '"', urldecode($field));
                 },
                 $fields
             );
