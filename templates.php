@@ -92,7 +92,7 @@ $PAGE->set_heading(get_string('otopo:managetemplates', 'otopo'));
 /*
  * Some variables. *
  */
-$returnurl = $returnurl ? new moodle_url($returnurl) : new moodle_url($url, ['action' => null]);
+$returnurl = $returnurl ? new moodle_url($returnurl) : new moodle_url($url, ['action' => "show",]);
 $mform     = null;
 
 /*
@@ -124,6 +124,7 @@ if ($action === 'create') {
     if ($fromform = $mform->get_data()) {
         $template->name = $fromform->name;
         $DB->update_record('otopo_template', $template);
+        redirect(new moodle_url('/mod/otopo/templates.php', ['id' => $template->id, 'action' => 'edit', 'cmid' => $cmid, 'sesskey' => sesskey()]));
     } else {
         $mform->set_data($template);
     }
@@ -133,7 +134,7 @@ if ($action === 'create') {
 } else if ($action === 'delete' && $template) {
     delete_items(-$template->id);
     $DB->delete_records('otopo_template', ['id' => $template->id]);
-    $returnurl->remove_params(['id' => null]);
+    $returnurl->remove_params('id');
 } else if ($action === 'export' && $template) {
     $items = get_items_sorted_from_otopo(-$template->id);
     csv_from_items($items, 'grids_templates_'.$template->id.'.csv');

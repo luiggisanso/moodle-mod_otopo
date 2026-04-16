@@ -79,6 +79,10 @@ class grade_form extends moodleform
             $mform->setType('comment', PARAM_RAW);
         }
 
+        // $mform->addElement('textarea', 'helptext', "[HELPTEXT_PER_ITEM]", 'wrap="virtual" rows="5" cols="50"');
+        // $mform->setType('helptext', PARAM_TEXT);
+        // $mform->setDefault('helptext', $this->_customdata['default_helptext']);
+
         if ($this->otopo->grade > 0) {
             $name           = get_string('gradeoutof', 'assign', $this->otopo->grade);
             $gradingelement = $mform->addElement('text', 'grade', $name, $this->_customdata['disabled'] ? 'disabled' : '');

@@ -158,6 +158,7 @@ class mod_otopo_external extends external_api
                     'id'      => new external_value(PARAM_INT, 'item record id'),
                     'name'    => new external_value(PARAM_TEXT, 'item name'),
                     'color'   => new external_value(PARAM_TEXT, 'item color'),
+                    'helptext'    => new external_value(PARAM_RAW, 'item help text', VALUE_OPTIONAL),
                     'ord'     => new external_value(PARAM_INT, 'item record ord'),
                     'degrees' => new external_multiple_structure(
                         new external_single_structure(
@@ -165,6 +166,7 @@ class mod_otopo_external extends external_api
                                 'id'          => new external_value(PARAM_INT, 'degree record id'),
                                 'name'        => new external_value(PARAM_TEXT, 'degree name'),
                                 'description' => new external_value(PARAM_TEXT, 'degree description', VALUE_OPTIONAL),
+                                'helptext'    => new external_value(PARAM_TEXT, 'degree help text', VALUE_OPTIONAL),
                                 'grade'       => new external_value(PARAM_INT, 'degree grade'),
                                 'ord'         => new external_value(PARAM_INT, 'degree record ord'),
                             ]
@@ -213,6 +215,7 @@ class mod_otopo_external extends external_api
                     [
                         'name'  => new external_value(PARAM_TEXT, 'item name'),
                         'color' => new external_value(PARAM_TEXT, 'item color'),
+                        'helptext'  => new external_value(PARAM_RAW, 'item helptext'),
                         'ord'   => new external_value(PARAM_INT, 'degree record ord'),
                     ]
                 ),
@@ -287,6 +290,7 @@ class mod_otopo_external extends external_api
                         'id'    => new external_value(PARAM_INT, 'item id'),
                         'name'  => new external_value(PARAM_TEXT, 'item name'),
                         'color' => new external_value(PARAM_TEXT, 'item color'),
+                        'helptext'  => new external_value(PARAM_RAW, 'item helptext'),
                         'ord'   => new external_value(PARAM_INT, 'degree record ord'),
                     ]
                 ),
@@ -409,6 +413,7 @@ class mod_otopo_external extends external_api
                     [
                         'name'        => new external_value(PARAM_TEXT, 'degree name'),
                         'description' => new external_value(PARAM_TEXT, 'degree description', VALUE_DEFAULT, null),
+                        'helptext'    => new external_value(PARAM_TEXT, 'degree help text', VALUE_DEFAULT, null),
                         'grade'       => new external_value(PARAM_INT, 'degree grade'),
                         'ord'         => new external_value(PARAM_INT, 'degree record ord'),
                     ]
@@ -486,6 +491,7 @@ class mod_otopo_external extends external_api
                         'id'          => new external_value(PARAM_INT, 'degree id'),
                         'name'        => new external_value(PARAM_TEXT, 'degree name'),
                         'description' => new external_value(PARAM_TEXT, 'degree description', VALUE_DEFAULT, null),
+                        'helptext'    => new external_value(PARAM_TEXT, 'degree help text', VALUE_DEFAULT, null),
                         'grade'       => new external_value(PARAM_INT, 'degree grade'),
                         'ord'         => new external_value(PARAM_INT, 'degree record ord'),
                     ]
@@ -1403,8 +1409,8 @@ class mod_otopo_external extends external_api
                 $itemsotopo['otopodegreeid']          = $otopo->degree->id;
                 $itemsotopo['otopodegreekey']         = $otopo->rank;
                 $itemsotopo['otopodegreename']        = $otopo->degree->name;
-                $itemsotopo['otopodegreename']        = $otopo->degree->name;
                 $itemsotopo['otopodegreedescription'] = $otopo->degree->description;
+                $itemsotopo['otopodegreehelptext']    = $otopo->degree->helptext;
                 $itemsotopo['otopodegreewidth']       = $otopo->rank == 0 ? 0 : ($otopo->rank / count($item->degrees) * 100);
             }
 

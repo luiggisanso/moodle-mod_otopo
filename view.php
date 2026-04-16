@@ -262,6 +262,7 @@ if ($canadmin || $cangrade || $canexportresults) {
                         $session->color = $fromform->color[$i];
                         $session->allowsubmissionfromdate = $fromform->allowsubmissionfromdate[$i];
                         $session->allowsubmissiontodate   = $fromform->allowsubmissiontodate[$i];
+                        $session->helpbubbletext          = $fromform->helpbubbletext[$i];
                         if (!empty($fromform->id[$i])) {
                             $session->id = $fromform->id[$i];
                             $DB->update_record('otopo_session', $session);
@@ -677,15 +678,18 @@ if ($canadmin || $cangrade || $canexportresults) {
 
                                 foreach ($items as $item) {
                                     $newitem = [
-                                        'name'  => $item['name'],
-                                        'ord'   => $item['ord'],
-                                        'otopo' => $moduleinstance->id,
+                                        'name'     => $item['name'],
+                                        'helptext' => $item['helptext'] ?? '',
+                                        'color'    => $item['color'] ?? '#000000',
+                                        'ord'      => $item['ord'],
+                                        'otopo'    => $moduleinstance->id,
                                     ];
                                     $itemid  = $DB->insert_record('otopo_item', $newitem);
                                     foreach ($item['degrees'] as $degree) {
                                         $newdegree = [
                                             'name'        => $degree['name'],
-                                            'description' => $degree['description'],
+                                            'description' => $degree['description'] ?? '',
+                                            'helptext'    => $degree['helptext'] ?? '',
                                             'grade'       => intval($degree['grade']),
                                             'ord'         => intval($degree['ord']),
                                             'item'        => $itemid,

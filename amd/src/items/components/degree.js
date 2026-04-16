@@ -78,14 +78,18 @@ define([
                     if (degree.id) {
                         ajax.editDegree(degree, this.cmid);
                     } else {
-                        if (!this.creationPending) {
+                        // Only create degree if parent item has been created and has an ID
+                        if (this.item.id && !this.creationPending) {
                             this.creationPending = true;
                             delete degree.id;
                             ajax.createDegree(this.item.id, degree, this.cmid).then((degreeId) => {
                                 this.degree.id = degreeId;
                                 this.creationPending = false;
                                 return true;
-                            }).catch(Log.error);
+                            }).catch((error) => {
+                                this.creationPending = false;
+                                Log.error(error);
+                            });
                         }
                     }
                 }
@@ -198,6 +202,16 @@ define([
                                     :disabled="creationPending"
                                 ></textarea>
                             </div>
+                            <div class="input-group mb-3">
+                                <textarea
+                                    v-model="degree.helptext"
+                                    class="form-control"
+                                    type="text" :id="'item_' + itemIndex + '_degree_helptext_' + index"
+                                    @input="processChange()"
+                                    :disabled="creationPending"
+                                    :placeholder="strings.degreehelptext"
+                                ></textarea>
+                            </div>
                         </div>
                         <div class="col-md-3" v-if="!collapsed">
                             <label
@@ -238,3 +252,4 @@ define([
         `
     };
 });
+

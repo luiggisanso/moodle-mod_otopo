@@ -47,7 +47,7 @@ define([
         methods: {
             addItem() {
                 if (!this.hasOtopo) {
-                    store.addItem({'id': null, 'name': '', color: '#000000', 'degrees': [],
+                    store.addItem({'id': null, 'name': '', color: '#000000', 'helptext': '', 'degrees': [],
                                    'ord': this.items.length > 0 ? this.items[this.items.length - 1].ord + 1 : 0});
                 }
             },

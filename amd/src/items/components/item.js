@@ -146,7 +146,10 @@ define([
                                 this.item.id = itemId;
                                 this.creationPending = false;
                                 return true;
-                            }).catch(Log.error);
+                            }).catch((error) => {
+                                this.creationPending = false;
+                                Log.error(error);
+                            });
                         }
                     }
                 }
@@ -271,6 +274,25 @@ define([
                                 required
                             />
                         </div>
+                        
+                        <label
+                            class="font-weight-bold text-dark"
+                            :for="'item_helptext_text_' + index"
+                        >
+                            {{strings.chooseitemhelptext}}
+                        </label>
+                        <div class="input-group mb-3">
+                            <textarea
+                                v-model="item.helptext"
+                                ref="helptext"
+                                class="form-control"
+                                type="text"
+                                :id="'item_helptext_' + index"
+                                :disabled="creationPending"
+                                @input="processChange()"
+                            ></textarea>
+                        </div>
+                        
                         <button
                             v-on:click="duplicateItem"
                             :disabled="creationPending || hasOtopo"

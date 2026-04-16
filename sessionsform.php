@@ -44,7 +44,7 @@ class sessions_form extends moodleform {
         $currenttimestamp = time();
         $startyear = (int)date('Y', strtotime('-5 year', $currenttimestamp));
         $stopyear = (int)date('Y', strtotime('+10 years', $currenttimestamp));
-
+        
         $defaultsdate = [
             'optional' => false,
             'startyear' => $startyear,
@@ -65,12 +65,14 @@ class sessions_form extends moodleform {
         $repeatarray[] = $mform->createElement('hidden', 'id', 0);
         $repeatarray[] = $mform->createElement('date_time_selector', 'allowsubmissionfromdate', get_string('sessionallowsubmissionfromdate', 'otopo'), $defaultsdate);
         $repeatarray[] = $mform->createElement('date_time_selector', 'allowsubmissiontodate', get_string('sessionallowsubmissiontodate', 'otopo'), $defaultsdate);
+        $repeatarray[] = $mform->createElement('textarea', 'helpbubbletext', get_string('sessionhelpbubbletext', 'otopo'), 'wrap="virtual" rows="5" cols="10"');
         $repeatarray[] = $mform->createElement('button', 'delete', get_string("sessiondelete", 'otopo'), ['class' => 'deletesession']);
 
         $repeateloptions = [];
         $mform->setType('name', PARAM_TEXT);
         $mform->setType('color', PARAM_TEXT);
         $mform->setType('id', PARAM_INT);
+        $mform->setType('helpbubbletext', PARAM_TEXT);
 
         $repeateloptions['allowsubmissionfromdate']['rule'] = 'required';
         $repeateloptions['allowsubmissiontodate']['rule'] = 'required';
@@ -95,6 +97,7 @@ class sessions_form extends moodleform {
             $defaultvalues['allowsubmissiontodate'][$i] = $default_to_date;
             $defaultvalues['name'][$i] = "Session " . ($i + 1);
             $defaultvalues['color'][$i] = '#000000';
+            $defaultvalues['helpbubbletext'][$i] = get_string("sessionhelptextdefaulttext", 'otopo');
         }
 
         $this->set_data($defaultvalues);
@@ -115,12 +118,18 @@ class sessions_form extends moodleform {
         if (!array_key_exists('color', $defaultvalues)) {
             $defaultvalues['color'] = [];
         }
+        if (!array_key_exists('helpbubbletext', $defaultvalues)) {
+            $defaultvalues['helpbubbletext'] = [];
+        }
         for ($i = 0; $i < $this->_form->_constantValues['option_repeats']; $i++) {
             if (!array_key_exists($i, $defaultvalues['name'])) {
                 $defaultvalues['name'][$i] = "Session " . strval($i + 1);
             }
             if (!array_key_exists($i, $defaultvalues['color'])) {
                 $defaultvalues['color'][$i] = '#000000';
+            }
+            if (!array_key_exists($i, $defaultvalues['helpbubbletext'])) {
+                $defaultvalues['helpbubbletext'][$i] = get_string("sessionhelptextdefaulttext", 'otopo');
             }
         }
         parent::set_data($defaultvalues);

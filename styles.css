@@ -94,12 +94,13 @@
     max-height: 180px;
     position: absolute;
     width: 100%;
-    padding-right: 30px;
     -webkit-filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
     -moz-filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
     -o-filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
     height: 83%;
+    top: 0;
+    left: 0;
 }
 
 .path-mod-otopo .degree-desc {
@@ -313,8 +314,18 @@
     overflow-x: auto;
     display: block;
 }
+
+.path-mod-otopo .preview_session > .row > .col-md-4 > .row > .col-xl-6 {
+    position: relative;
+}
+/* 
+.path-mod-otopo .preview_session > div > div.col-md-4 {
+    position: relative;
+} */
+
 .path-mod-otopo .otopo-per-session > .row > .col-6 {
     display: inline-block;
+    position: relative;
 }
 
 .path-mod-otopo .otopo-sessions-list h5 {
@@ -357,6 +368,12 @@
 }
 
 .path-mod-otopo .lock-icon {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.path-mod-otopo .help-icon {
     display: flex;
     justify-content: center;
     font-size: 1.5rem;
@@ -423,4 +440,16 @@
 }
 .path-mod-otopo .nav-link.drag-title {
     padding-bottom: 0;
+}
+
+.row > .col-md-4 > .row > .col-xl-6 {
+    position: relative;
+}
+.row > .col-md-4 > .row > .col-xl-6 > .degree-star-container {
+    width: 100%;
+    height: 83%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    max-height: 180px;
 }

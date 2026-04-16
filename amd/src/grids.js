@@ -117,6 +117,20 @@ define([
                             stringid: 'stringlimit255'
                         }
                     },
+                    {
+                        methodname: 'core_get_string',
+                        args: {
+                            component: 'otopo',
+                            stringid: 'chooseitemhelptext'
+                        }
+                    },
+                    {
+                        methodname: 'core_get_string',
+                        args: {
+                            component: 'otopo',
+                            stringid: 'defaulthelptextdegree'
+                        }
+                    }
                 ]);
                 strings.additem = await promises[0];
                 strings.deleteitem = await promises[1];
@@ -128,6 +142,8 @@ define([
                 strings.degreegrade = await promises[7];
                 strings.duplicateitem = await promises[8];
                 strings.stringlimit255 = await promises[9];
+                strings.chooseitemhelptext = await promises[10];
+                strings.degreehelptext = await promises[11];
 
                 return strings;
             }

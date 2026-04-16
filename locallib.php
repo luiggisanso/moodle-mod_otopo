@@ -45,6 +45,7 @@ function toform_from_sessions(array $sessions)
         $toform->color[$i] = $session->color;
         $toform->allowsubmissionfromdate[$i] = $session->allowsubmissionfromdate;
         $toform->allowsubmissiontodate[$i]   = $session->allowsubmissiontodate;
+        $toform->helpbubbletext[$i] = $session->helpbubbletext;
         $i++;
     }
 
@@ -66,8 +67,8 @@ function get_items_from_otopo($otopoid)
     $items = [];
     $rs    = $DB->get_recordset_sql(
         '
-        SELECT item.id, item.name, item.color, item.ord,
-            degree.id AS did, degree.name AS dname, degree.description AS ddescription, degree.grade AS dgrade, degree.ord AS dord
+        SELECT item.id, item.name, item.color, item.ord, item.helptext,
+            degree.id AS did, degree.name AS dname, degree.description AS ddescription, degree.grade AS dgrade, degree.ord AS dord, degree.helptext AS dhelptext
         FROM {otopo_item} item
         LEFT JOIN {otopo_item_degree} degree ON degree.item = item.id
         WHERE item.otopo = :otopo ORDER BY item.id, degree.ord',
@@ -79,6 +80,7 @@ function get_items_from_otopo($otopoid)
                 'id'      => $record->id,
                 'name'    => $record->name,
                 'color'   => empty($record->color) ? '#000000' : $record->color,
+                'helptext' => $record->helptext,
                 'ord'     => $record->ord,
                 'degrees' => [],
             ];
@@ -89,6 +91,7 @@ function get_items_from_otopo($otopoid)
                 'id'          => $record->did,
                 'name'        => $record->dname,
                 'description' => $record->ddescription,
+                'helptext'    => $record->dhelptext,
                 'grade'       => $record->dgrade,
                 'ord'         => $record->dord,
             ];
@@ -115,8 +118,8 @@ function get_items_sorted_from_otopo($otopoid)
     $items = [];
     $rs    = $DB->get_recordset_sql(
         '
-        SELECT item.id, item.name, item.color, item.ord,
-            degree.id AS did, degree.name AS dname, degree.description AS ddescription, degree.grade AS dgrade, degree.ord AS dord
+        SELECT item.id, item.name, item.color, item.ord, item.helptext,
+            degree.id AS did, degree.name AS dname, degree.description AS ddescription, degree.grade AS dgrade, degree.ord AS dord, degree.helptext AS dhelptext
         FROM {otopo_item} item
         LEFT JOIN {otopo_item_degree} degree ON degree.item = item.id
         WHERE item.otopo = :otopo ORDER BY item.ord, degree.ord',
@@ -126,11 +129,12 @@ function get_items_sorted_from_otopo($otopoid)
     foreach ($rs as $record) {
         if (!array_key_exists($record->ord, $items)) {
             $items[$record->ord] = (object) [
-                'id'      => $record->id,
-                'name'    => $record->name,
-                'color'   => empty($record->color) ? '#000000' : $record->color,
-                'ord'     => $record->ord,
-                'degrees' => [],
+                'id'       => $record->id,
+                'name'     => $record->name,
+                'color'    => empty($record->color) ? '#000000' : $record->color,
+                'helptext' => $record->helptext,
+                'ord'      => $record->ord,
+                'degrees'  => [],
             ];
         }
 
@@ -139,6 +143,7 @@ function get_items_sorted_from_otopo($otopoid)
                 'id'          => $record->did,
                 'name'        => $record->dname,
                 'description' => $record->ddescription,
+                'helptext'    => $record->dhelptext,
                 'grade'       => $record->dgrade,
                 'ord'         => $record->dord,
             ];
@@ -167,13 +172,18 @@ function table_items(array &$items)
         }
 
         $item->onedegreehasdesc = false;
+        $item->onedegreehashelptext = false;
         foreach ($item->degrees as $index => $degree) {
             $degree->index = ($index + 1);
             if (!empty($degree->description)) {
                 $item->onedegreehasdesc = true;
             }
+            if (!empty($degree->helptext)) {
+                $item->onedegreehashelptext = true;
+            }
 
             $degree->description = nl2br($degree->description);
+            $degree->helptext    = nl2br($degree->helptext);
         }
     }
 
@@ -916,11 +926,14 @@ function csv_from_items(array $items, string $filename)
 
     $header = [
         'name',
+        'color',
+        'helptext',
         'ord',
     ];
     for ($i = 0; $i < $maxdegrees; $i++) {
         $header[] = 'degree'.($i + 1).'_name';
         $header[] = 'degree'.($i + 1).'_description';
+        $header[] = 'degree'.($i + 1).'_helptext';
         $header[] = 'degree'.($i + 1).'_grade';
         $header[] = 'degree'.($i + 1).'_ord';
     }
@@ -932,7 +945,6 @@ function csv_from_items(array $items, string $filename)
         $degrees = $it['degrees'];
         unset($it['id']);
         unset($it['degrees']);
-        unset($it['color']);
         foreach (array_values($degrees) as $key => $degree) {
             unset($degree->id);
             foreach ($degree as $field => $value) {
