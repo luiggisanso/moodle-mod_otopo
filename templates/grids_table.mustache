@@ -24,7 +24,12 @@
         {{#items}}
             <thead>
                 <tr>
-                    <th scope="col" colspan="{{nbrdegreesmax}}" class="text-center" style="color: {{color}};">{{name}}</th>
+                    <th scope="col" colspan="{{nbrdegreesmax}}" class="text-center" style="color: {{color}};">
+                        {{name}}
+                        {{#helptext}}
+                        <i class="fa fa-circle-info ml-2" data-toggle="tooltip" data-placement="top" title="{{helptext}}"></i>
+                        {{/helptext}}
+                    </th>
                 </tr>
             </thead>
             <tbody>

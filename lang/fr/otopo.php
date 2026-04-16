@@ -84,7 +84,7 @@ $string['grade'] = 'Note';
 
 $string['sessionoptions'] = 'Options de sessions';
 $string['session']        = 'Session';
-$string['session_help']   = 'Si **Session imposée** : les étudiants devront s\'auto-positionner sur les sessions que vous aurez définies. Si **Session imposée** : les étudiants pourront s\'auto-positionner autant de fois qu\'ils le souhaitent, dans la limite de sessions définie.';
+$string['session_help'] = 'Si **Session limitée** : les étudiants devront s\'auto-positionner sur les sessions que vous aurez définies, si **Session libre** : les étudiants pourront s\'auto-positionner autant de fois qu\'ils le souhaitent, dans la limite de sessions définie.';
 $string['sessionopen']    = 'Session libre';
 $string['sessionlimited'] = 'Session imposée';
 $string['sessions']       = 'Nombre de sessions';
@@ -266,6 +266,16 @@ $string['otopo:exportresults']        = 'Exporter les résultats';
 $string['otopo:fill']                 = 'Remplir l\'activité';
 $string['otopo:grade']                = 'Évaluer l\'activité';
 $string['otopo:receivenotifications'] = 'Recevoir des notifications';
+
+/*
+ * Helptexts. *
+ */
+$string['degreehelptextheader'] = 'Aide sur ce degré';
+$string['chooseitemhelptext'] = 'Message affiché dans le bouton "aide"';
+$string['defaulthelptextdegree'] = 'Écrivez ici votre texte d\'aide / informations complémentaires pour ce degré, par exemple son équivalent en note /100.';
+$string['sessionhelpbubbletext'] = 'Bulle d\'aide';
+$string['sessionhelptextdefaulttext'] = 'Cadenas fermé: session complétée ou pas encore ouverte. | Cadenas ouvert: session disponible.';
+
 
 /*
  * Privacy API implementation. *

@@ -140,6 +140,52 @@ function xmldb_otopo_upgrade(int $oldversion)
         upgrade_mod_savepoint(true, 2023020100, 'otopo');
     }//end if
 
+    if ($oldversion < 2025121500) {
+
+        // Define field helpbubbletext to be added to otopo_session.
+        $table = new xmldb_table('otopo_session');
+        $field = new xmldb_field('helpbubbletext', XMLDB_TYPE_TEXT, null, null, null, null, null, 'event_end');
+
+        // Conditionally launch add field helpbubbletext.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Otopo savepoint reached.
+        upgrade_mod_savepoint(true, 2025121500, 'otopo');
+    }
+
+    if ($oldversion < 2025121501) {
+
+        // Define field helptext to be added to otopo_item_degree.
+        $table = new xmldb_table('otopo_item_degree');
+        $field = new xmldb_field('helptext', XMLDB_TYPE_TEXT, null, null, null, null, null, 'ord');
+
+        // Conditionally launch add field helptext.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Otopo savepoint reached.
+        upgrade_mod_savepoint(true, 2025121501, 'otopo');
+    }
+
+    if ($oldversion < 2025121805) {
+
+        // Define field helptext to be added to otopo_item.
+        $table = new xmldb_table('otopo_item');
+        $field = new xmldb_field('helptext', XMLDB_TYPE_TEXT, null, null, null, null, null, 'ord');
+
+        // Conditionally launch add field helptext.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Otopo savepoint reached.
+        upgrade_mod_savepoint(true, 2025121805, 'otopo');
+    }
+
+
     return true;
 
 }//end xmldb_otopo_upgrade()

@@ -84,7 +84,7 @@ $string['grade'] = 'Grade';
 
 $string['sessionoptions'] = 'Session options';
 $string['session']        = 'Session';
-$string['session_help']   = 'If **Imposed session**: students must self-position to the sessions you define. If **Imposed session**: students can self-position as many times as they like, within the session limit defined.';
+$string['session_help'] = 'If **Imposed session**: students must self-position to the sessions you define. If **Open session**: students can self-position as many times as they like, within the session limit defined.';
 $string['sessionopen']    = 'Open session';
 $string['sessionlimited'] = 'Imposed session';
 $string['sessions']       = 'Number of sessions';
@@ -266,6 +266,15 @@ $string['otopo:exportresults']        = 'Export results';
 $string['otopo:fill']                 = 'Fill the activity';
 $string['otopo:grade']                = 'Grading self-assessments';
 $string['otopo:receivenotifications'] = 'Receive notifications';
+
+/*
+ * Helptexts. *
+ */
+$string['degreehelptextheader'] = 'Help on this degree';
+$string['chooseitemhelptext'] = 'Message shown in the "help" button';
+$string['defaulthelptextdegree'] = 'Write here your help text / supplementary info for this degree, e.g. its equivalent in grade out of 100.';
+$string['sessionhelpbubbletext'] = 'Help bubble';
+$string['sessionhelptextdefaulttext'] = 'Closed lock: session is not open or you already completed it. | Open lock: session is open.';
 
 /*
  * Privacy API implementation. *

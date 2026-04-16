@@ -213,6 +213,7 @@ class view_fill_page implements renderable, templatable
             $data->star          = $output->image_url('star', 'mod_otopo')->out();
             $data->starcontainer = $output->image_url('star_container', 'mod_otopo')->out();
             $data->help          = $output->image_url('help2', 'mod_otopo')->out();
+            $data->info          = $output->image_url('help', 'mod_otopo')->out();
         }//end if
 
         if ($this->action == 'evolution') {

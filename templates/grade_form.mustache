@@ -27,9 +27,9 @@
         {{/globalform.validated}}
     {{/globalform.notevaluated}}
     <div class="grade-session">
-        <a class="collapseReview" data-toggle="collapse" href="#sessionFormCollapse" aria-expanded="false" aria-controls="sessionFormCollapse">
+        <button type="button" class="collapseReview btn btn-link p-0" data-toggle="collapse" data-target="#sessionFormCollapse" aria-expanded="false" aria-controls="sessionFormCollapse">
             <span class="fa fa-arrow-right"></span> {{globalform.title}}
-        </a>
+        </button>
         <div class="collapse" id="sessionFormCollapse">
             {{{globalform.form}}}
         </div>
@@ -37,11 +37,11 @@
     <div class="mt-3 border-bottom mb-3"></div>
     {{#otoposforms}}
         <div class="grade-item">
-            <a class="collapseReview" data-toggle="collapse" href="#itemFormCollapse{{id}}" aria-expanded="false" aria-controls="itemFormCollapse{{id}}">
+            <button type="button" class="collapseReview btn btn-link p-0" data-toggle="collapse" data-target="#itemFormCollapse{{id}}" aria-expanded="false" aria-controls="itemFormCollapse{{id}}">
                 <span class="fa fa-arrow-right"></span> {{title}}
-            </a>
+            </button>
             <div class="collapse form-group fitem" id="itemFormCollapse{{id}}">
-                <textarea {{#disabled}}disabled{{/disabled}} class="felement form-control" data-item="{{id}}">{{comment}}</textarea>
+                <textarea {{#disabled}}disabled{{/disabled}} class="felement form-control" data-item="{{id}}" data-form-change-tracker-ignore="true">{{comment}}</textarea>
             </div>
         </div>
     {{/otoposforms}}

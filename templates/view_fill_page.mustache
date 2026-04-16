@@ -155,8 +155,14 @@
                     <div class="row text-nowrap">
                         {{#sessions}}
                             <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <div class="lock-icon">
+                                <div class="d-flex justify-content-center">
+                                    <div class="lock-icon">
                                         <i class="otopo fa {{#isvalidorclosed}}fa-lock{{/isvalidorclosed}}{{^isvalidorclosed}}fa-unlock{{/isvalidorclosed}}"></i>
+                                    </div>
+                                    <div class="ml-2 mr-2"></div>
+                                    <div class="help-icon">
+                                        <i class="otopo fa-solid fa-circle-info" href="#" data-toggle="tooltip" data-placement="top" title="{{ helpbubbletext }}"></i>
+                                    </div>
                                 </div>
                             </div>
                         {{/sessions}}
@@ -202,9 +208,7 @@
                                         <div class="modal-content rounded">
                                             <div class="modal-header rounded-top">
                                                 <h5 class="modal-title font-weight-bold">{{displayname}}</h5>
-                                                <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
-                                                    <i class="icon fa fa-times-circle" aria-hidden="true"></i>
-                                                </button>
+                                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body rounded-bottom otopo">
                                                 <h5 class="font-weight-bold" style="color: {{ itemColor}};">{{ itemName }}</h5>
@@ -212,6 +216,8 @@
                                                 <p>{{ degree.name }}</p>
                                                 <h6 class="font-weight-bold">{{#str}} description, otopo {{/str}}</h6>
                                                 <p>{{ degree.description }}</p>
+                                                <h6 class="font-weight-bold">{{#str}} degreehelptextheader, otopo {{/str}}</h6>
+                                                <p>{{ degree.helptext }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -273,9 +279,9 @@
             </div>
             <div id="evaluate"></div>
             <div class="d-flex justify-content-end">
-                <a class="btn-otopo ml-5 mr-2 no-print" href="#" onclick="window.print()">{{#str}} print, otopo {{/str}}</a>
+                <a class="btn-otopo ml-5 mr-2 no-print" href="#" onclick="window.print(); return false;">{{#str}} print, otopo {{/str}}</a>
                 <a class="btn-otopo ml-2 mr-2 no-print" href="{{config.wwwroot}}/mod/otopo/view.php?id={{cm.id}}&action=progress">{{#str}} save {{/str}}</a>
-                <a class="btn-otopo ml-2 mr-5 no-print" href="#" data-toggle="modal" data-target="#validateModal">{{#str}} validate, otopo {{/str}}</a>
+                <button type="button" class="btn-otopo ml-2 mr-5 no-print" data-toggle="modal" data-target="#validateModal">{{#str}} validate, otopo {{/str}}</button>
             </div>
 
             <div class="modal fade" id="validateModal" tabindex="-1" role="dialog" aria-labelledby="validateModalLabel" aria-hidden="true">
@@ -283,9 +289,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">{{#str}} validate, otopo {{/str}}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             {{#str}}validate_help, otopo{{/str}}
@@ -308,9 +312,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{#str}} fillmygrid, otopo {{/str}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 {{> mod_otopo/grids_table }}

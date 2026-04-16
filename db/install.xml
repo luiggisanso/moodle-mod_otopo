@@ -43,6 +43,7 @@
           <FIELD NAME="allowsubmissiontodate" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If set, submissions will only be accepted before this date."/>
           <FIELD NAME="event_start" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
           <FIELD NAME="event_end" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false"/>
+          <FIELD NAME="helpbubbletext" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -65,6 +66,7 @@
           <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"/>
           <FIELD NAME="otopo" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" />
           <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
+          <FIELD NAME="helptext" TYPE="text" NOTNULL="false" SEQUENCE="false" />
           <FIELD NAME="color" TYPE="char" LENGTH="7" NOTNULL="true" DEFAULT="#000000" SEQUENCE="false"/>
           <FIELD NAME="ord" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"/>
       </FIELDS>
@@ -84,6 +86,7 @@
             <FIELD NAME="description" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" />
             <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" UNSIGNED="true" SEQUENCE="false" COMMENT="The grade for this degree."/>
             <FIELD NAME="ord" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+            <FIELD NAME="helptext" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         </FIELDS>
         <KEYS>
             <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
